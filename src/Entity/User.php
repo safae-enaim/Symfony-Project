@@ -16,14 +16,9 @@ class User implements UserInterface
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", unique=true)
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
-    private $uuid;
 
     /**
      * @var array|string[]
@@ -84,26 +79,14 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getUuid(): ?string
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(string $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
     /**
      * A visual identifier that represents this user.
      *
      * @see UserInterface
      */
-    public function getUsername(): string
+    public function getUsername(): int
     {
-        return (string) $this->uuid;
+        return (int) $this->id;
     }
 
     /**
@@ -125,14 +108,6 @@ class User implements UserInterface
         $this->roles = $roles;
 
         return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getPassword()
-    {
-        // not needed for apps that do not check user passwords
     }
 
     /**
@@ -188,6 +163,14 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return (string) $this->password;
+    }
+
     public function setPassword(string $password): self
     {
         $this->password = $password;
@@ -219,6 +202,7 @@ class User implements UserInterface
     {
         if (!$this->userRoles->contains($userRole)) {
             $this->userRoles[] = $userRole;
+            $userRole->addUser($this);
         }
 
         return $this;
