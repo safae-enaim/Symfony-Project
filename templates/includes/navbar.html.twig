@@ -20,12 +20,12 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{path('default')}}">Contact
+                <a class="nav-link" href="{{path('contact_new')}}">Contact
                     <span class="sr-only">(current)</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{path('default')}}">Créer un compte
+                <a class="nav-link" href="{{path('user_new')}}">Créer un compte
                     <span class="sr-only">(current)</span>
                 </a>
             </li>
@@ -38,13 +38,13 @@
         <ul class="navbar-nav ml-auto">
             {% if app.user %}
             <li class="nav-item">
-                <a class="nav-link" href="{{path('default')}}">
+                <a class="nav-link" href="{{path('app_logout')}}">
                     <i class="fas fa-sign-out-alt">&nbsp;user.name</i>
                 </a>
             </li>
             {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="{{path('default')}}">
+                <a class="nav-link" href="{{path('app_login')}}">
                     <i class="fas fa-sign-in-alt">&nbsp;Connexion</i>
                 </a>
             </li>
