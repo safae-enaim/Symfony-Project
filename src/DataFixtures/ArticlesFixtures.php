@@ -7,6 +7,7 @@ use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\Article;
 use App\Entity\Comment;
+use App\Entity\CommentState;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -52,42 +53,23 @@ class ArticlesFixtures extends Fixture
         $manager->persist($userC);
         $manager->flush();
 
-        // Création de commentaires
-        $comments = [];
-        $intComDate = $faker->dateTimeBetween('-6 month', '+6 month', 'Europe/Paris');
-        for($i=0; $i <60; $i++)
-        {
-            $contentCom = $faker->sentence($faker->numberBetween(3, 20), true);
-            $comment = new Comment();    
-            $comment
-                ->setContent($contentCom)
-                ->setCreatedDate($intComDate)
-                ->setAuthor($userC);
-            $comments[] = $comment;
-            $manager->persist($comment);
-        }
-        $manager->flush();
-        
-        
         //Utilisation d'image local
         //$picture = $faker->image($dir = '/tmp', $width = 640, $height = 480);
         $picture = $faker->imageUrl($width = 640, $height = 480);
-        $content = $faker->paragraph($faker->numberBetween(1, 10), true);
+        $content = $faker->paragraph($faker->numberBetween(1, 2), true);
         $intDate = $faker->dateTimeBetween('-6 month', '+6 month', 'Europe/Paris');
         $updateDate = $faker->dateTimeBetween('-5 month', '+5 month', 'Europe/Paris');
         $deleteDate = $faker->dateTimeBetween('-4 month', '+4 month', 'Europe/Paris');
-        
+
         // Création d'articles
         $articles = [];
         for($i=0; $i <20; $i++)
         {
             $article = new Article();
-            
-            $article->addComment($comments[$faker->numberBetween(0, count($comments))]);
                 
             $article->setTitle($faker->word)
                     ->setPicture($picture)
-                    ->setUser($user->getId())
+                    ->setUser($user)
                     ->setCreationDate($intDate)
                     ->setUpdatedDate($updateDate)
                     ->setDeletedDate($deleteDate)
@@ -100,6 +82,35 @@ class ArticlesFixtures extends Fixture
         }
         $manager->flush();
 
+        // Création de commentaires
+        $comments = [];
+        $intComDate = $faker->dateTimeBetween('-6 month', '+6 month', 'Europe/Paris');
         
+        //Ajout de l'état d'un commentaire
+        $commentState = new CommentState();
+        $commentState
+            ->setName('approved');
+        $manager->persist($commentState);
+
+        for($i=0; $i <60; $i++)
+        {
+            $contentCom = $faker->sentence($faker->numberBetween(3, 20), true);
+            $comment = new Comment(); 
+            
+            $comment
+                ->setContent($contentCom)
+                ->setCreatedDate($intComDate)
+                ->setAuthor($userC)
+                ->setState($commentState)
+                ->setArticle($articles[$faker->numberBetween(0, count($articles) - 1)]);
+            $comments[] = $comment;
+            $manager->persist($comment);
+        }
+        
+        foreach($articles as $article){
+            $article->addComment($comments[$faker->numberBetween(0, count($comments) - 1)]);
+            $manager->persist($article);
+        }
+        $manager->flush();        
     }
 }

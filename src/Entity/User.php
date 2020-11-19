@@ -203,7 +203,7 @@ class User implements UserInterface
     {
         if (!$this->userRoles->contains($userRole)) {
             $this->userRoles[] = $userRole;
-            $userRole->addUser($this);
+            $userRole->addUserRole($this);
         }
 
         return $this;

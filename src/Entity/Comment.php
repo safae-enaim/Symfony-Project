@@ -107,7 +107,7 @@ class Comment
 
     public function setState(?CommentState $CommentState): self
     {
-        $this->CommentState = $CommentState;
+        $this->state = $CommentState;
 
         return $this;
     }
