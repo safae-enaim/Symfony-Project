@@ -41,7 +41,8 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string The hashed password
+     * @ORM\Column(type="string")
      */
     private $password;
 
@@ -202,7 +203,7 @@ class User implements UserInterface
     {
         if (!$this->userRoles->contains($userRole)) {
             $this->userRoles[] = $userRole;
-            $userRole->addUser($this);
+            $userRole->addUserRole($this);
         }
 
         return $this;
