@@ -2,11 +2,20 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Accueil!{% endblock %}</title>
+        <link  rel="stylesheet" href="/css/bootstrap.min.css">
+        <link  rel="stylesheet" href="/fontawesome-web/css/all.css">
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% include "includes/navbar.html.twig" %}
+        <div class="container">
+            {% block body %}{% endblock %}
+        </div>
+{#        <script defer src="/fontawesome-web/js/all.js"></script>#}
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/popper.min.js"></script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>

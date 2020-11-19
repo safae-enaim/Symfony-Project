@@ -15,10 +15,4 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 
-.idea/codeStyles/codeStyleConfig.xml
-.idea/modules.xml
-.idea/projetBlog.iml
-.idea/vcs.xml
-.idea/commandlinetools/
-.idea/php.xml
-.idea/workspace.xml
+.idea/*
