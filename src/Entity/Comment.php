@@ -41,7 +41,6 @@ class Comment
     private $article;
 
     /**
-     * @var Collection
      * @ORM\ManyToOne(targetEntity=CommentState::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -107,7 +106,7 @@ class Comment
 
     public function setState(?CommentState $state): self
     {
-        $this->state = $state;
+        $this->commentState = $state;
 
         return $this;
     }

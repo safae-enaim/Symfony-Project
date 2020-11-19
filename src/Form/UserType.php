@@ -38,6 +38,7 @@ class UserType extends AbstractType
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($encoder) {
                 /** @var User */
                 $user = $event->getData();
+                die(dump($user));
                 $form = $event->getForm();
                 if ($user)
                     $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
