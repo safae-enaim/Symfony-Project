@@ -12,7 +12,10 @@
         <div class="container">
             {% block body %}{% endblock %}
         </div>
-{#        <script defer src="/fontawesome-web/js/all.js"></script>#}
+        {% block footer %}
+{#            {% include "includes/footer.html.twig" %}#}
+        {% endblock %}
+        {#        <script defer src="/fontawesome-web/js/all.js"></script>#}
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/jquery.min.js"></script>
         <script src="/js/popper.min.js"></script>
