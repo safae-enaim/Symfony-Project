@@ -7,7 +7,7 @@
 {% block body %}
 
 	{# AFFICHAGE ARTICLE #}
-	<div class="jumbotron">
+	<div class="jumbotron border-danger">
 		<h1 class="display-3">
 			{{ article.getTitle() }}
 		</h1>
@@ -23,23 +23,25 @@
 
 	{# Liste des coms #}
 	{% for com in article.getComments() %}
-		<div class="list-group">
+		<div class="list-group article border-danger">
 			<div class="list-group-item list-group-item-action flex-column align-items-start active">
 				<div class="d-flex w-100 justify-content-between">
 					<h5 class="mb-1">{{ com.getAuthor().getEmail() }}</h5>
 					<small>{{ com.getDate() }}</small>
 				</div>
 				<p class="mb-1">{{ com.getContent() }}</p>
-
 			</div>
 		</div>
 	{% endfor %}
     <div class="form-group">
       <label for="exampleTextarea">Entrez votre commentaire</label>
       <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
-		<a class="btn btn-primary btn-lg" href="#" role="button">Envoyé</a>
+		<button type="submit" class="btn btn-primary">Envoyé</button>
     </div>
 	<style>
+        .article {
+            margin-bottom: 2em;
+        }
 		.img-article {
 			margin-left: 10em;
 			width: 10em;
