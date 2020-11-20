@@ -68,6 +68,16 @@ class User implements UserInterface
      */
     private $comments;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $articleLiked;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $articleShared;
+
     public function __construct()
     {
         $this->userRoles = new ArrayCollection();
@@ -272,6 +282,30 @@ class User implements UserInterface
                 $comment->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getArticleLiked(): ?string
+    {
+        return $this->articleLiked;
+    }
+
+    public function setArticleLiked(?string $articleLiked): self
+    {
+        $this->articleLiked = $articleLiked;
+
+        return $this;
+    }
+
+    public function getArticleShared(): ?string
+    {
+        return $this->articleShared;
+    }
+
+    public function setArticleShared(?string $articleShared): self
+    {
+        $this->articleShared = $articleShared;
 
         return $this;
     }
