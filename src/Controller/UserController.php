@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Role;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,12 +18,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class UserController extends AbstractController
 {
-    private $encoder;
-
-    public function __construct(UserPasswordEncoderInterface $encoder){
-        $this->encoder = $encoder;
-    }
-
     /**
      * @Route("/", name="user_index", methods={"GET"})
      * @param UserRepository $userRepository
@@ -30,7 +26,6 @@ class UserController extends AbstractController
     public function index(UserRepository $userRepository): Response
     {
         $users = $userRepository->findAll();
-        dump($users);
         return $this->render('user/index.html.twig', [
             'users' => $users,
         ]);
@@ -41,17 +36,18 @@ class UserController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function new(Request $request): Response
+    public function new(Request $request, RoleRepository $roleRepository): Response
     {
-        $encoder = $this->encoder;
         $user = new User();
+        $userRole = $roleRepository->findOneBy(['name' => 'ROLE_USER']);
+        $user->addUserRole($userRole);
+
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
 
-//            $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
 
             $entityManager->persist($user);
             $entityManager->flush();

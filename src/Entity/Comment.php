@@ -41,7 +41,6 @@ class Comment
     private $article;
 
     /**
-     * @var Collection
      * @ORM\ManyToOne(targetEntity=CommentState::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
      */

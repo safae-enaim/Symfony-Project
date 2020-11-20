@@ -32,7 +32,7 @@ class UserFixtures extends Fixture
         $user = new User();
         $user->setEmail($faker->safeEmail)
              ->setPassword($this->encoder->encodePassword($user, 'admin'))
-             ->addUserRole($userRole);
+             ->addUserRole($userRole);  
 
 
         $manager->persist($user);
