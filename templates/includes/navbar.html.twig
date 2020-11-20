@@ -38,13 +38,18 @@
         <ul class="navbar-nav ml-auto">
             {% if app.user %}
             <li class="nav-item">
-                <a class="nav-link" href="{{path('app_logout')}}">
-                    <i class="fas fa-sign-out-alt">&nbsp;user.name</i>
-                </a>
+                <div class="dropdown">
+                    <a class="nav-link btn-lg dropdown-toggle" id="userDropdown" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true"><i class="fas fa-sign-out-alt">&nbsp;{{ app.user.firstname ? app.user.firstname : app.user.email }}</i></a>
+                    <div class="dropdown-menu" aria-labelledby="userDropdown" style="position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px; will-change: transform;" x-placement="bottom-start">
+                        <a class="dropdown-item" href="{{ path('user_show', {'id':  app.user.id}) }}">Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ path("app_logout") }}"><i class="fas fa-sign-out-alt">&nbsp;Décoonnexion</i></a>
+                    </div>
+                </div>
             </li>
             {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="{{path('app_login')}}">
+                <a class="nav-link btn-lg" href="{{path('app_login')}}">
                     <i class="fas fa-sign-in-alt">&nbsp;Connexion</i>
                 </a>
             </li>

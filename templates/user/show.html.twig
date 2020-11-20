@@ -1,46 +1,98 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}User{% endblock %}
+{% block stylesheet %}
+    <style>
+        .ui-tabs-vertical { width: 55em; }
+        .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+        .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+        .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+        .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; }
+        .ui-tabs-vertical .ui-tabs-panel { padding: 1em; float: right; width: 40em;}
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
+    <h1>Gestion du compte {{ app.user.email }}</h1>
+    <div id="tabs" class="ui-tabs-panel bg-dark">
+        <ul class="ui-tabs-panel bg-dark">
+            {% if app.user and is_granted("ROLE_ADMIN") %}
+                <li><a href="#tabAdminIndex" class="ui-tabs-vertical ui-tabs-nav">Accueil</a></li>
+                <li><a href="#tabAdminArticles" class="ui-tabs-vertical ui-tabs-nav">Articles</a></li>
+                <li><a href="#tabAdminComments" class="ui-tabs-vertical ui-tabs-nav">Gérer les commentaires</a></li>
+            {% elseif app.user and is_granted("ROLE_USER") %}
+            <li><a href="#tabUserInfoPerso" class="ui-tabs-vertical ui-tabs-nav">Informations Personnelles</a></li>
+            <li><a href="#tabUserLikedArticles" class="ui-tabs-vertical ui-tabs-nav">Articles Aimés</a></li>
+            <li><a href="#tabUserSharedArticles" class="ui-tabs-vertical ui-tabs-nav">Articles Partagés</a></li>
+            <li><a href="#tabUserCommentedArticles" class="ui-tabs-vertical ui-tabs-nav">Articles Commentés</a></li>
+            {% endif %}
+        </ul>
+        {% if app.user and is_granted("ROLE_ADMIN") %}
+            <div id="tabAdminIndex"><h2>Tableau de bord</h2></div>
+            <div id="tabAdminArticles"><h2>Mes articles</h2></div>
+            <div id="tabAdminComments"><h2>Gestion des cmmentaires</h2></div>
+        {% elseif app.user and is_granted("ROLE_USER") %}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
-            <tr>
-                <th>First_name</th>
-                <td>{{ user.firstName }}</td>
-            </tr>
-            <tr>
-                <th>Last_name</th>
-                <td>{{ user.lastName }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ user.email }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ user.password }}</td>
-            </tr>
-            <tr>
-                <th>Roles</th>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-            </tr>
-            <tr>
-                <th>Phone</th>
-                <td>{{ user.phone }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div id="tabUserInfoPerso" class="bg-dark">
+            <h2>Gestion des informations</h2>
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ user.id }}</td>
+                </tr>
+                <tr>
+                    <th>First_name</th>
+                    <td>{{ user.firstName }}</td>
+                </tr>
+                <tr>
+                    <th>Last_name</th>
+                    <td>{{ user.lastName }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th>Password</th>
+                    <td>{{ user.password }}</td>
+                </tr>
+                <tr>
+                    <th>Roles</th>
+                    <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Phone</th>
+                    <td>{{ user.phone }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="tabUserLikedArticles">
+            <h2>Mes articles aimés</h2>
+        </div>
+        <div id="tabUserSharedArticles">
+            <h2>Mes articles partagés</h2>
+
+        </div>
+        <div id="tabUserCommentedArticles">
+            <h2>Mes articles commentés</h2>
+
+        </div>
+        {% endif %}
+    </div>
 
     <a href="{{ path('user_index') }}">back to list</a>
 
     <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
 
     {{ include('user/_delete_form.html.twig') }}
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $( function() {
+            $( "#tabs" ).tabs().addClass( "ui-tabs-vertical ui-helper-clearfix" );
+            $( "#tabs li" ).removeClass( "ui-corner-top" ).addClass( "ui-corner-left" );
+        } );
+    </script>
 {% endblock %}
