@@ -12,6 +12,7 @@
                 <th>Last_name</th>
                 <th>Email</th>
                 <th>Password</th>
+                <th>Roles</th>
                 <th>Phone</th>
                 <th>actions</th>
             </tr>
@@ -22,7 +23,8 @@
                 <td>{{ user.firstName }}</td>
                 <td>{{ user.lastName }}</td>
                 <td>{{ user.email }}</td>
-                <td>{{ user.password }}</td>
+                <td>{{ user.password|slice(1, 20) ~ '...' }}</td>
+                <td>{{ user.getRoles|json_encode() }}</td>
                 <td>{{ user.phone }}</td>
                 <td>
                     <a href="{{ path('user_show', {'id': user.id}) }}">show</a>

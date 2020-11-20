@@ -28,6 +28,10 @@
                 <td>{{ user.password }}</td>
             </tr>
             <tr>
+                <th>Roles</th>
+                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+            </tr>
+            <tr>
                 <th>Phone</th>
                 <td>{{ user.phone }}</td>
             </tr>
