@@ -2,11 +2,7 @@
 
 namespace App\Entity;
 
-<<<<<<< HEAD
 use App\Entity\Category;
-=======
-use App\Entity\Picture;
->>>>>>> b45a07df61de4b2b6b9e94f743f2f2d842575d8a
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ArticleRepository;
 use Doctrine\Common\Collections\Collection;
@@ -34,10 +30,7 @@ class Article
      * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="articles")
      */
     private $categories;
-<<<<<<< HEAD
-=======
 
->>>>>>> b45a07df61de4b2b6b9e94f743f2f2d842575d8a
     /**
      * @ORM\OneToOne(targetEntity=Picture::class, cascade={"persist"})
      */
@@ -135,12 +128,7 @@ class Article
         return $this;
     }
 
-<<<<<<< HEAD
-
     public function getPicture(): ?string
-=======
-    public function getPicture(): ?Picture
->>>>>>> b45a07df61de4b2b6b9e94f743f2f2d842575d8a
     {
         return $this->picture;
     }
