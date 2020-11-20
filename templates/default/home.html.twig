@@ -3,7 +3,7 @@
 {% block title %}Comics Blog !
 {% endblock %}
 
-{% block body %}
+{% block body %}	
 	<div class="articles">
 		{% for article in articles %}
 			{% set i = loop.index %}
@@ -21,13 +21,12 @@
 					</p>
 				</div>
 				<div class="card-header">
-				
+
 					{% for cate in article.getFakeCate() %}
 						<span class="badge badge-pill {{ i is divisible by(2) ? ' badge-secondary' : 'badge-primary' }}">{{cate}}</span>
 					{% endfor %}
-
+					- Crée le:
 					{{ article.getDate() }}
-					--
 				</div>
 			</div>
 		{% endfor %}
