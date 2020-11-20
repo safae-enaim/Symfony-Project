@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Entity\CommentState;
+use App\Entity\Picture;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -65,10 +66,30 @@ class ArticlesFixtures extends Fixture
         $articles = [];
         for($i=0; $i <20; $i++)
         {
+            $expr = $i % 3;
             $article = new Article();
-                
+            
+            $urlPic = '';
+            $altPic = '';
+            if($expr == 0){
+                $urlPic = 'https://i.pinimg.com/originals/2a/d9/b8/2ad9b872a860cbe3b45fcc00d4875ebb.jpg';
+                $altPic = 'BATMAN';
+            }
+            else if ($expr == 1){
+                $urlPic = 'https://hdwallpaperim.com/wp-content/uploads/2017/08/23/465413-Flash-superhero-DC_Comics-748x560.jpg';
+                $altPic = 'FLASH';
+
+            }              
+            else{
+                $urlPic = 'https://cutewallpaper.org/21/the-joker-comic-wallpaper/Joker-Comic-Wallpaper-the-best-75+-images-in-2018-.jpg';
+                $altPic = 'JOKER';
+            }
+            $pic = new Picture();
+            $pic->setUrl($urlPic)
+                ->setAlt($altPic);
+
             $article->setTitle($faker->word)
-                    ->setPicture($picture)
+                    ->setPicture($pic)
                     ->setUser($user)
                     ->setCreationDate($intDate)
                     ->setUpdatedDate($updateDate)
