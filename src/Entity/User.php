@@ -75,6 +75,7 @@ class User implements UserInterface
         $this->comments = new ArrayCollection();
     }
 
+
     public function getId(): ?int
     {
         return $this->id;
