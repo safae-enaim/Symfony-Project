@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Picture;
 use App\Entity\Category;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ArticleRepository;
@@ -128,7 +129,7 @@ class Article
         return $this;
     }
 
-    public function getPicture(): ?string
+    public function getPicture(): ?Picture
     {
         return $this->picture;
     }
