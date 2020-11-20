@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Picture;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
@@ -28,10 +29,10 @@ class Article
     /**
      * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="articles")
      */
-    private $category;
+    private $categories;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\OneToOne(targetEntity=Picture::class, cascade={"persist"})
      */
     private $picture;
 
@@ -104,17 +105,17 @@ class Article
     }
 
     /**
-     * @return Collection|Category[]
+     * @return Collection|Categories[]
      */
-    public function getCategory(): Collection
+    public function getCategories(): Collection
     {
         return $this->category;
     }
 
     public function addCategory(Category $category): self
     {
-        if (!$this->category->contains($category)) {
-            $this->category[] = $category;
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
         }
 
         return $this;
@@ -122,17 +123,17 @@ class Article
 
     public function removeCategory(Category $category): self
     {
-        $this->category->removeElement($category);
+        $this->categories->removeElement($category);
 
         return $this;
     }
 
-    public function getPicture(): ?string
+    public function getPicture(): ?Picture
     {
         return $this->picture;
     }
 
-    public function setPicture(?string $picture): self
+    public function setPicture(?Picture $picture): self
     {
         $this->picture = $picture;
 
@@ -243,6 +244,10 @@ class Article
         return $this->comments;
     }
 
+    public function getDate(): string{
+        return date('d/m/G', $this->getCreationDate()->getTimestamp());
+    }
+
     public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
@@ -263,5 +268,15 @@ class Article
         }
 
         return $this;
+    }
+
+    public function getResume(): ?string
+    {
+        return substr($this->getContent(), -120);
+    }
+
+    public function getFakeCate()
+    {
+        return array ('Categorie 1', 'Categorie 2', 'Categorie 3');
     }
 }

@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Comics Blog !
+{% endblock %}
+
+{% block body %}
+	<div class="articles">
+		{% for article in articles %}
+			{% set i = loop.index %}
+			<div class="art {{ i is divisible by(2) ? ' bg-primary' :' bg-secondary' }} card text-white mb-3" style="max-width: 50rem;">
+				<div class="card-header">
+					{{ article.getUser().getEmail() }}
+				</div>
+				<div class="card-body">
+					<h4 class="card-title">
+						{{ article.getTitle() }}
+					</h4>
+					<img class="img-article" alt='{{article.getPicture().getAlt()}}' src='{{article.getPicture().getUrl()}}'/>
+					<p class="card-text">
+						{{ article.getResume() }}...
+					</p>
+				</div>
+				<div class="card-header">
+				
+					{% for cate in article.getFakeCate() %}
+						<span class="badge badge-pill {{ i is divisible by(2) ? ' badge-secondary' : 'badge-primary' }}">{{cate}}</span>
+					{% endfor %}
+
+					{{ article.getDate() }}
+					--
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+	<style>
+		.articles {
+			width: 100%;
+		}
+		.img-article {
+			margin-left: 10em;
+			width: 10em;
+		}
+	</style>
+{% endblock %}
