@@ -16,3 +16,4 @@
 ###< symfony/phpunit-bridge ###
 
 .idea/*
+/migrations
