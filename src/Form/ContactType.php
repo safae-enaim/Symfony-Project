@@ -21,6 +21,9 @@ class ContactType extends AbstractType
             ->add('email',EmailType::class)
             ->add('phone')
             ->add('message',TextareaType::class)
+
+            ->add('save',SubmitType::class);
+
         ;
     }
 

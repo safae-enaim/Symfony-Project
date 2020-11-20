@@ -33,8 +33,6 @@ class ArticleController extends AbstractController
      */
     public function new(Request $request, UserRepository $userRepository): Response
     {
-       // die($request);
-        
         $article = new Article();
                 $article->setCreationDate(new DateTime());
                 $article->setShared(0);
@@ -53,7 +51,9 @@ class ArticleController extends AbstractController
             $entityManager->persist($article);
             $entityManager->flush();
 
-            
+            $this->addFlash('success', 'Le booking à bien été créer');
+
+            return $this->redirectToRoute('article_index');
             }    
 
         return $this->render('article/new.html.twig', [
