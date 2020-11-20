@@ -99,6 +99,12 @@
     "fzaninotto/faker": {
         "version": "v1.9.1"
     },
+    "knplabs/knp-components": {
+        "version": "v2.4.2"
+    },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v5.3.0"
+    },
     "monolog/monolog": {
         "version": "1.25.5"
     },
@@ -192,6 +198,9 @@
     },
     "symfony/dependency-injection": {
         "version": "v4.4.16"
+    },
+    "symfony/deprecation-contracts": {
+        "version": "v2.2.0"
     },
     "symfony/doctrine-bridge": {
         "version": "v4.4.16"

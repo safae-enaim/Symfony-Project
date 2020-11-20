@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Picture;
+use App\Entity\Category;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ArticleRepository;
 use Doctrine\Common\Collections\Collection;
@@ -26,7 +26,7 @@ class Article
      */
     private $user;
 
-    /**
+   /**
      * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="articles")
      */
     private $categories;
@@ -83,7 +83,7 @@ class Article
 
     public function __construct()
     {
-        $this->category = new ArrayCollection();
+        $this->categories = new ArrayCollection();
         $this->comments = new ArrayCollection();
     }
 
@@ -109,7 +109,7 @@ class Article
      */
     public function getCategories(): Collection
     {
-        return $this->category;
+        return $this->categories;
     }
 
     public function addCategory(Category $category): self
@@ -128,7 +128,7 @@ class Article
         return $this;
     }
 
-    public function getPicture(): ?Picture
+    public function getPicture(): ?string
     {
         return $this->picture;
     }
