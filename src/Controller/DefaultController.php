@@ -2,16 +2,20 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\ArticleRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DefaultController extends AbstractController
 {
-    public function index(): Response
+    /**
+    * @Route("/", name="default", methods={"GET"})
+    */
+    public function index(ArticleRepository $articleRepository): Response
     {
         return $this->render('default/home.html.twig', [
-            'controller_name' => 'DefaultController',
+            'articles' => $articleRepository->findAll(),
         ]);
     }
 }

@@ -7,9 +7,12 @@
 	<div class="articles">
 		{% for article in articles %}
 			{% set i = loop.index %}
+
 			<div class="art {{ i is divisible by(2) ? ' bg-primary' :' bg-secondary' }} card text-white mb-3" style="max-width: 50rem;">
 				<div class="card-header">
 					{{ article.getUser().getEmail() }}
+                    <a href="{{ path('displayArticle', {'id': article.id}) }}">show</a>
+                    
 				</div>
 				<div class="card-body">
 					<h4 class="card-title">
@@ -28,6 +31,9 @@
 					- Crée le:
 					{{ article.getDate() }}
 				</div>
+                <div class="card-header">
+                    {{article.getComments.count}} commentaires
+                </div>
 			</div>
 		{% endfor %}
 	</div>

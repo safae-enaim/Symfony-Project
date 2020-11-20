@@ -13,15 +13,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/article")
+ */
 class ArticleController extends AbstractController
 {
     /**
-    * @Route("/", name="default", methods={"GET"})
+    * @Route("/", name="accueil", methods={"GET"})
     */
-    public function index(ArticleRepository $articleRepository): Response
+    public function index(): Response
     {
-        return $this->render('default/home.html.twig', [
-            'articles' => $articleRepository->findAll(),
+        return $this->redirectToRoute('default');
+    }
+
+    /**
+    * @Route("/{id}", name="displayArticle", methods={"GET"})
+    */
+    public function oneArticle (Article $article): Response
+    {
+
+        return $this->render('article/article.html.twig', [
+            'article' => $article,
         ]);
     }
 

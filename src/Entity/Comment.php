@@ -111,4 +111,9 @@ class Comment
         return $this;
     }
 
+    public function getDate(): string{
+        return date('d/m/G', $this->getCreatedDate()->getTimestamp());
+    }
+
+
 }
