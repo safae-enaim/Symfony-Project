@@ -21,6 +21,7 @@
                 <li><a href="#tabAdminArticles" class="ui-tabs-vertical ui-tabs-nav">Articles</a></li>
                 <li><a href="#tabAdminComments" class="ui-tabs-vertical ui-tabs-nav">Gérer les commentaires</a></li>
             {% elseif app.user and is_granted("ROLE_USER") %}
+            <li><a href="#tabUserAccueil" class="ui-tabs-vertical ui-tabs-nav">Accueil</a></li>
             <li><a href="#tabUserInfoPerso" class="ui-tabs-vertical ui-tabs-nav">Informations Personnelles</a></li>
             <li><a href="#tabUserLikedArticles" class="ui-tabs-vertical ui-tabs-nav">Articles Aimés</a></li>
             <li><a href="#tabUserSharedArticles" class="ui-tabs-vertical ui-tabs-nav">Articles Partagés</a></li>
@@ -32,7 +33,9 @@
             <div id="tabAdminArticles"><h2>Mes articles</h2></div>
             <div id="tabAdminComments"><h2>Gestion des cmmentaires</h2></div>
         {% elseif app.user and is_granted("ROLE_USER") %}
-
+        <div id="tabUserAccueil" class="bg-dark">
+            <h2>Tableau de bord</h2>
+        </div>
         <div id="tabUserInfoPerso" class="bg-dark">
             <h2>Gestion des informations</h2>
             <table class="table">
