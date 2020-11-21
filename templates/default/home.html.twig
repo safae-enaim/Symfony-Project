@@ -4,6 +4,8 @@
 {% endblock %}
 
 {% block body %}
+
+	{% dump(current_user) %}
 	<div class="articles">
 		{% for article in articles %}
 			{% set expr = loop.index is divisible by(2) %}
