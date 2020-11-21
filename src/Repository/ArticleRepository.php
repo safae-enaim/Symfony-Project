@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Article;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
@@ -15,11 +17,16 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class ArticleRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $session;
+    private $entityManager;
+
+    public function __construct(ManagerRegistry $registry, SessionInterface $session, EntityManagerInterface $entityManager)
     {
+        $this->session = $session;
+        $this->entityManager = $entityManager;
         parent::__construct($registry, Article::class);
     }
-    
+
     public function displayArticles()
     {
         return $this->findAll();
@@ -28,6 +35,13 @@ class ArticleRepository extends ServiceEntityRepository
     public function getUserArticle()
     {
         return $this->getUser()->getFisrt;
+    }
+
+    public function getCurrentUser()
+    {
+        return $this->entityManager
+            ->getRepository(User::class)
+            ->findOneBy(['email' => $this->session->get('email-user')]);
     }
 
     // /**
@@ -58,5 +72,4 @@ class ArticleRepository extends ServiceEntityRepository
         ;
     }
     */
-
 }

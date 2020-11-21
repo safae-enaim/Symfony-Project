@@ -3,47 +3,95 @@
 {% block title %}Comics Blog !
 {% endblock %}
 
-{% block body %}	
+{% block body %}
+
+	{% dump(current_user) %}
 	<div class="articles">
 		{% for article in articles %}
-			{% set i = loop.index %}
+			{% set expr = loop.index is divisible by(2) %}
 
-			<div class="art {{ i is divisible by(2) ? ' bg-primary' :' bg-secondary' }} card text-white mb-3" style="max-width: 50rem;">
-				<div class="card-header">
-					{{ article.getUser().getEmail() }}
-                    <a href="{{ path('displayArticle', {'id': article.id}) }}">show</a>
-                    
+			<div class="card article {{ expr ? 'bg-primary' : 'bg-secondary' }} mb-3">
+				<h3 class="card-header">
+					{{ article.getTitle() }}
+				</h3>
+				{# Image de l'article #}
+				<div>
+					<a href="{{ path('displayArticle', {'id': article.id}) }}"><img class="img-article" alt='{{article.getPicture().getAlt()}}' src='{{article.getPicture().getUrl()}}'/></a>
 				</div>
-				<div class="card-body">
-					<h4 class="card-title">
-						{{ article.getTitle() }}
-					</h4>
-					<img class="img-article" alt='{{article.getPicture().getAlt()}}' src='{{article.getPicture().getUrl()}}'/>
-					<p class="card-text">
-						{{ article.getResume() }}...
+				{# Resumé et lien vers l'article #}
+				<div class="body-text">
+					<p class="card-text">{{ article.getResume() }}...</p>
+					<a class="{{ expr ? 'text-secondary' : 'text-primary' }}" href="{{ path('displayArticle', {'id': article.id}) }}"> Lire la suite</a>
+				</div>
+				{# nombre de commentaires, likes et shares #}
+				<div class="body-text">
+					<p class="{{ expr ? 'text-secondary' : 'text-primary' }} body-footer-first-elem">{{article.getComments.count}}
+						commentaires
+					</p>
+					<p class="badge badge-pill badge-success body-footer-last-elem">{{article.getLiked()}} Likes
+					</p>
+					<p class="badge badge-pill badge-info body-footer-last-elem">{{article.getShared()}} Shares
 					</p>
 				</div>
-				<div class="card-header">
-
+				<div>
+					{# Liste des categories #}
 					{% for cate in article.getFakeCate() %}
-						<span class="badge badge-pill {{ i is divisible by(2) ? ' badge-secondary' : 'badge-primary' }}">{{cate}}</span>
+						<span class="badge badge-pill {{ expr ? ' badge-secondary' : 'badge-primary' }}">{{cate}}</span>
 					{% endfor %}
-					- Crée le:
-					{{ article.getDate() }}
 				</div>
-                <div class="card-header">
-                    {{article.getComments.count}} commentaires
-                </div>
+				{# Date de creation et nom de l'auteur #}
+				<div class="card-footer text-muted ">
+					Crée le:
+					{{ article.getDate() }}
+					par
+					{{ article.getUser().getEmail() }}
+				</div>
 			</div>
 		{% endfor %}
 	</div>
 	<style>
 		.articles {
+			margin-top: 2em;
+		}
+
+		.article {
 			width: 100%;
 		}
+
 		.img-article {
-			margin-left: 10em;
-			width: 10em;
+			width: 100%;
+		}
+
+		.body-text {
+			display: flex;
+			margin: 0 2em;
+		}
+		.body-text a {
+			margin-left: 0.4em;
+		}
+
+		.body-first-elem {
+			width: 85%;
+		}
+
+		.body-footer-first-elem {
+			width: 80%
+		}
+
+		.body-footer-last-elem {
+			width: 7%;
+			height: 1%;
+			margin-left: 1%;
+		}
+
+		.body-last-elem {
+			width: 15%;
+			text-align: end;
+
+		}
+		.card-header,
+		.card-footer {
+			text-align: center;
 		}
 	</style>
 {% endblock %}

@@ -16,6 +16,7 @@ class DefaultController extends AbstractController
     {
         return $this->render('default/home.html.twig', [
             'articles' => $articleRepository->findAll(),
+            'current_user' => $articleRepository->getCurrentUser()
         ]);
     }
 }
