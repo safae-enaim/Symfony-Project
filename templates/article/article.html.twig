@@ -7,44 +7,134 @@
 {% block body %}
 
 	{# AFFICHAGE ARTICLE #}
-	<div class="jumbotron border-danger">
-		<h1 class="display-3">
-			{{ article.getTitle() }}
-		</h1>
-		<img class="img-article" alt='{{article.getPicture().getAlt()}}' src='{{article.getPicture().getUrl()}}'/>
+	<div class="jumbotron">
+		<div class="header-article">
+			<div class=" title-header-article">
+				<h1 class="display-2">{{ article.getTitle() }}</h1>
+				{% for cate in article.getFakeCate() %}
+					<span class="badge badge-pill badge-primary">{{cate}}</span>
+				{% endfor %}
+			</div>
+			<div class="img-header-article">
+				<img class="img-article" alt='{{article.getPicture().getAlt()}}' src='{{article.getPicture().getUrl()}}'/>
+			</div>
+		</div>
 		<hr class="my-4">
-		<p>
-			{{ article.getContent() }}
-		</p>
-		<p class="lead">
-			<a class="btn btn-primary btn-lg" href="#" role="button">like</a>
-		</p>
-	</div>
+		<div class="container-article">
+			<div class="vertical-scroll-bar">
+				<p>{{ article.getContent() }}</p>
+			</div>
+		</div>
+		<hr class="my-4">
+		<div class="footer-container-article">
+			<div class="text-container-article">
+				<span class="text-muted">{{article.getComments.count}} commentaires
+				</span>
+			</div>
+			<div class="button-container-article">
+				<button type="button" class="btn btn-outline-primary btn-footer-article btn-sm">Like</button>
+				<button type="button" class="btn btn-outline-primary btn-footer-article btn-sm">Share</button>
+			</div>
+		</div>
+		<div class="footer-container-article">
+			<div class="text-muted text-infos-footer">
+				Crée le:
+				{{ article.getDate() }}
+				par
+				{{ article.getUser().getEmail() }}
+			</div>
+			<div class="badge-likes-shares">
+				<span class="badge badge-pill badge-success">{{article.getLiked()}}
+					Likes</span>
+				<span class="badge badge-pill badge-info">{{article.getShared()}}
+					Shares</span>
+			</div>
 
+		</div>
+	</div>
+	<div class="back-button-container">
+		<button type="button" class="btn btn-outline-info back-button">Retour</button>
+	</div>
+	<div class="form-group">
+		<textarea class="form-control" id="exampleTextarea" rows="3" placeholder="Entrez votre commentaire.."></textarea>
+		<button type="submit" class="btn btn-primary">Envoyé</button>
+	</div>
 	{# Liste des coms #}
 	{% for com in article.getComments() %}
-		<div class="list-group article border-danger">
-			<div class="list-group-item list-group-item-action flex-column align-items-start active">
-				<div class="d-flex w-100 justify-content-between">
-					<h5 class="mb-1">{{ com.getAuthor().getEmail() }}</h5>
-					<small>{{ com.getDate() }}</small>
-				</div>
-				<p class="mb-1">{{ com.getContent() }}</p>
+		<div class="card bg-light mb-3">
+			<div class="card-header text-primary">{{ com.getAuthor().getEmail() }}</div>
+			<div
+				class="card-body">
+				{# <small>{{ com.getDate() }}</small> #}
+				<p class="card-text text-secondary">{{ com.getContent() }}</p>
 			</div>
 		</div>
 	{% endfor %}
-    <div class="form-group">
-      <label for="exampleTextarea">Entrez votre commentaire</label>
-      <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
-		<button type="submit" class="btn btn-primary">Envoyé</button>
-    </div>
 	<style>
-        .article {
-            margin-bottom: 2em;
-        }
+		/* Article */
+		.jumbotron {
+			margin-top: 2em;
+			border: 0.1em solid #b15315;
+			padding: 2rem;
+		}
+		/* Header Article */
+		.header-article,
+		.footer-container-article {
+			display: flex;
+		}
+		.title-article {
+			text-align: center;
+		}
+		.title-header-article {
+			width: 70%;
+		}
+		.img-header-article {
+			width: 30%;
+		}
+		/* Header body */
+		.container-article {
+			text-align: justify;
+		}
 		.img-article {
-			margin-left: 10em;
-			width: 10em;
+			width: 100%;
+		}
+		/* Header footer */
+		.text-container-article,
+		.text-infos-footer {
+			width: 80%;
+		}
+		.button-container-article,
+		.badge-likes-shares {
+			text-align: end;
+			width: 20%;
+		}
+		.btn-footer-article {
+			border-radius: 1em;
+			width: 5em;
+
+		}
+		.back-button-container {
+			text-align: end;
+		}
+		.back-button {
+			margin-bottom: 1em;
+			border-radius: 0.5em;
+		}
+		/* Commentaires */
+		.commentaries {
+			margin-bottom: 1em;
+		}
+		.card {
+			border-radius: 0.7em;
+		}
+
+		.vertical-scroll-bar {
+			width: 103%;
+			height: 20em;
+			overflow-y: scroll;
+		}
+		.vertical-scroll-bar p {
+			margin-right: 1em;
 		}
 	</style>
 {% endblock %}

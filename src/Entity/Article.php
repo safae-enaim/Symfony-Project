@@ -273,7 +273,7 @@ class Article
 
     public function getResume(): ?string
     {
-        return substr($this->getContent(), -120);
+        return substr($this->getContent(), 0, 140);
     }
 
     public function getFakeCate()
