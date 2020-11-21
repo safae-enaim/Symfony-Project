@@ -9,7 +9,6 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Picture</th>
                 <th>Creation_date</th>
                 <th>Updated_date</th>
                 <th>Deleted_date</th>
@@ -25,7 +24,6 @@
         {% for article in articles %}
             <tr>
                 <td>{{ article.id }}</td>
-                <td>{{ article.picture }}</td>
                 <td>{{ article.creationDate ? article.creationDate|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ article.updatedDate ? article.updatedDate|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ article.deletedDate ? article.deletedDate|date('Y-m-d H:i:s') : '' }}</td>
@@ -41,7 +39,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="11">no records found</td>
+                <td colspan="10">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

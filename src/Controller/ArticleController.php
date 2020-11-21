@@ -1,17 +1,16 @@
 <?php
 
 namespace App\Controller;
-use DateTime;
 
 use App\Entity\Article;
-use App\Entity\User;
+use App\Entity\Category;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
-use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/article")
@@ -19,11 +18,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class ArticleController extends AbstractController
 {
     /**
-    * @Route("/", name="accueil", methods={"GET"})
-    */
-    public function index(): Response
+     * @Route("/", name="article_index", methods={"GET"})
+     */
+    public function index(ArticleRepository $articleRepository): Response
     {
-        return $this->redirectToRoute('default');
+        return $this->render('article/index.html.twig', [
+            'articles' => $articleRepository->displayArticles(),
+        ]);
     }
 
     /**
@@ -31,7 +32,6 @@ class ArticleController extends AbstractController
     */
     public function oneArticle (Article $article): Response
     {
-
         return $this->render('article/article.html.twig', [
             'article' => $article,
         ]);
@@ -40,19 +40,14 @@ class ArticleController extends AbstractController
     /**
      * @Route("/new", name="article_new", methods={"GET","POST"})
      */
-    public function new(Request $request, UserRepository $userRepository): Response
+    public function new(Request $request, CategoryRepository $categoryRepository): Response
     {
         $article = new Article();
-                $article->setCreationDate(new DateTime());
-                $article->setShared(0);
-                $article->setLiked(0);
-                $article->setVisible(true);
-                $user = new User();
-                $user = $userRepository->findOneBy(['email' => 'admin@ex.com']);
-                $article->setUser($user);
+        $category = new Category();
+        $category->setName('Frisson');
+        $article->addCategory($category);
 
         $form = $this->createForm(ArticleType::class, $article);
-      
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -60,15 +55,13 @@ class ArticleController extends AbstractController
             $entityManager->persist($article);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Le booking à bien été créer');
-
             return $this->redirectToRoute('article_index');
-            }    
+        }
 
         return $this->render('article/new.html.twig', [
             'article' => $article,
             'form' => $form->createView(),
-            ]);
+        ]);
     }
 
     /**

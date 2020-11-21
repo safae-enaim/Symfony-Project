@@ -7,8 +7,9 @@ use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\Article;
 use App\Entity\Comment;
-use App\Entity\CommentState;
 use App\Entity\Picture;
+use App\Entity\Category;
+use App\Entity\CommentState;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -42,6 +43,20 @@ class ArticlesFixtures extends Fixture
              ->addUserRole($adminRole);
 
         $manager->persist($user);
+        $manager->flush();
+
+        //Ajout de Catégorie
+        $category = new Category();
+        $category->setName("Frisson");
+        $manager->persist($category);
+
+        $category2 = new Category();
+        $category2->setName("Horreur");
+        $manager->persist($category2);
+
+        $category3 = new Category();
+        $category3->setName("Humour");
+        $manager->persist($category3);
         $manager->flush();
 
              //Ajout user admin comment

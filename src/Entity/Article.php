@@ -28,7 +28,8 @@ class Article
     private $user;
 
    /**
-     * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="articles")
+     * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="articles", cascade={"persist"})
+     * @ORM\JoinTable(name="article_category")
      */
     private $categories;
 

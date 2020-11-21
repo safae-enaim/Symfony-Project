@@ -25,6 +25,7 @@ class Category
     private $name;
 
     /**
+     * @var ArrayCollection
      * @ORM\ManyToMany(targetEntity=Article::class, mappedBy="category")
      */
     private $articles;

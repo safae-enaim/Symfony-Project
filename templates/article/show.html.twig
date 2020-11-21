@@ -12,10 +12,6 @@
                 <td>{{ article.id }}</td>
             </tr>
             <tr>
-                <th>Picture</th>
-                <td>{{ article.picture }}</td>
-            </tr>
-            <tr>
                 <th>Creation_date</th>
                 <td>{{ article.creationDate ? article.creationDate|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
@@ -47,7 +43,6 @@
                 <th>Visible</th>
                 <td>{{ article.visible ? 'Yes' : 'No' }}</td>
             </tr>
-         
         </tbody>
     </table>
 
