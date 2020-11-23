@@ -11,6 +11,15 @@
     </head>
     <body>
         {% include "includes/navbar.html.twig" %}
+        <div class="container my-3">
+            {% for label, messages in app.flashes %}
+                <div class="alert alert-{{ label }}">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
         <div class="container">
             {% block body %}{% endblock %}
         </div>
