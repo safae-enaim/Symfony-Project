@@ -29,17 +29,6 @@
                     <span class="sr-only">(current)</span>
                 </a>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="{{path('article_new')}}">Article
-                    <span class="sr-only">(current)</span>
-                </a>
-            </li>
-            {% if app.user and is_granted("ROLE_ADMIN") %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{path('default')}}">Utilisateurs</a>
-            </li>
-            {% endif %}
         </ul>
         <ul class="navbar-nav ml-auto">
             {% if app.user %}
