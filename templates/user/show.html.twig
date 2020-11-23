@@ -276,8 +276,59 @@
 				{% endif %}
 			</div>
 			<div id="tabUserCommentedArticles">
-				<h2>Mes articles commentés</h2>
-
+				{% if comments|length == 0 %}
+					<h2>Vous n'avez aucun article commenté</h2>
+				{% else %}
+					<h2>{{ comments.getTotalItemCount }} articles commentés</h2>
+					<div class="navigation">
+						{{ knp_pagination_render(comments) }}
+					</div>
+					{% for comment in comments.items %}
+						{% set expr = loop.index is divisible by(2) %}
+						<div class="card article {{ expr ? 'bg-primary' : 'bg-secondary' }} mb-3">
+							<h3 class="card-header">
+								{{ comment.article.getTitle() }}
+							</h3>
+							<div>
+								<a href="{{ path('displayArticle', {'id': comment.article.id}) }}"><img class="img-article" alt='{{comment.article.getPicture().getAlt()}}' src='{{comment.article.getPicture().getUrl()}}' height="200"/></a>
+							</div>
+							<div class="body-text">
+								<p class="card-text">{{ comment.article.getResume() }}...</p>
+								<a class="{{ expr ? 'text-secondary' : 'text-primary' }}" href="{{ path('displayArticle', {'id': comment.article.id}) }}"> Lire la suite</a>
+							</div>
+							<div class="body-text">
+								<p class="{{ expr ? 'text-secondary' : 'text-primary' }} body-footer-first-elem">{{comment.article.getComments.count}}
+									commentaires
+								</p>
+								<p class="badge badge-pill badge-success body-footer-last-elem">{{comment.article.getLiked()}} Likes
+								</p>
+								<p class="badge badge-pill badge-info body-footer-last-elem">{{comment.article.getShared()}} Shares
+								</p>
+							</div>
+							<div>
+								{# Liste des categories #}
+								{% for cate in comment.article.getFakeCate() %}
+									<span class="badge badge-pill {{ expr ? ' badge-secondary' : 'badge-primary' }}">{{cate}}</span>
+								{% endfor %}
+							</div>
+							{# Date de creation et nom de l'auteur #}
+							<div class="card-footer text-muted ">
+								Crée le:
+								{{ comment.article.getDate() }}
+								par
+								{{ comment.article.getUser().getEmail() }}
+							</div>
+							<div class="card bg-light mb-3">
+								<div class="card-header text-primary">{{ comment.getAuthor().getEmail() }}</div>
+								<div class="card-body">
+									<p class="card-text text-secondary">{{ comment.getContent() }}</p>
+									<small>{{ comment.date|date("d M Y", "Europe/Paris") }}</small>
+								</div>
+							</div>
+						</div>
+						<hr>
+					{% endfor %}
+				{% endif %}
 			</div>
 		{% endif %}
 	</div>

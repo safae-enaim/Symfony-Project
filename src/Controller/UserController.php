@@ -91,10 +91,6 @@ class UserController extends AbstractController
                 $request->query->getInt('page', 1),
                 10
             );
-            dump($articlesLikes);
-            dump(count($articlesShared));
-            dump(($articlesShared));
-            dump($user);
         }
         return $this->render('user/show.html.twig', [
             'user' => $user,
