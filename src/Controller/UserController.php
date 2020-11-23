@@ -9,6 +9,7 @@ use App\Repository\ArticleRepository;
 use App\Repository\CommentRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,25 +56,41 @@ class UserController extends AbstractController
      * @param User $user
      * @return Response
      */
-    public function show(User $user, CommentRepository $commentRepository, ArticleRepository $articleRepository): Response
+    public function show(User $user,PaginatorInterface $paginator, CommentRepository $commentRepository, ArticleRepository $articleRepository, Request $request): Response
     {
-        $comments =[];
-        $articlesLikes =[];
-        $articlesShared =[];
+        $pagComments = [];
+        $pagArticlesLikes = [];
+        $pagArticlesShared = [];
         if (array_search("ROLE_USER", $user->getRoles()) == 0){
             $comments = $commentRepository->findBy(['author' => $user->getId()], ['created_date' => 'DESC']);
+            $pagComments = $paginator->paginate(
+                $comments,
+                $request->query->getInt('page', 1),
+                10
+            );
             $articlesLikes = [];
             if ($user->getArticleLiked() != null) {
                 foreach (explode(",", $user->getArticleLiked()) as $index => $liked) {
                     $articlesLikes[$index] = $articleRepository->find($liked);
                 }
             }
+            $pagArticlesLikes = $paginator->paginate(
+                $articlesLikes,
+                $request->query->getInt('page', 1),
+                10
+            );
+
             $articlesShared = [];
             if ($user->getArticleShared() != null) {
                 foreach (explode(",", $user->getArticleShared()) as $index => $shared) {
                     $articlesShared[$index] = $articleRepository->find($shared);
                 }
             }
+            $pagArticlesShared = $paginator->paginate(
+                $articlesShared,
+                $request->query->getInt('page', 1),
+                10
+            );
             dump($articlesLikes);
             dump(count($articlesShared));
             dump(($articlesShared));
@@ -81,9 +98,9 @@ class UserController extends AbstractController
         }
         return $this->render('user/show.html.twig', [
             'user' => $user,
-            'comments' => $comments,
-            'likes' => $articlesLikes,
-            'shares' => $articlesShared
+            'comments' => $pagComments,
+            'likes' => $pagArticlesLikes,
+            'shares' => $pagArticlesShared
         ]);
     }
 
