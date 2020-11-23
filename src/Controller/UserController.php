@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\ArticleRepository;
+use App\Repository\CommentRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,19 +20,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class UserController extends AbstractController
 {
-    /**
-     * @Route("/", name="user_index", methods={"GET"})
-     * @param UserRepository $userRepository
-     * @return Response
-     */
-    public function index(UserRepository $userRepository): Response
-    {
-        $users = $userRepository->findAll();
-        return $this->render('user/index.html.twig', [
-            'users' => $users,
-        ]);
-    }
-
     /**
      * @Route("/new", name="user_new", methods={"GET","POST"})
      * @param Request $request
@@ -52,7 +41,7 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('user_index');
+            return $this->redirectToRoute('default');
         }
 
         return $this->render('user/new.html.twig', [
@@ -66,10 +55,35 @@ class UserController extends AbstractController
      * @param User $user
      * @return Response
      */
-    public function show(User $user): Response
+    public function show(User $user, CommentRepository $commentRepository, ArticleRepository $articleRepository): Response
     {
+        $comments =[];
+        $articlesLikes =[];
+        $articlesShared =[];
+        if (array_search("ROLE_USER", $user->getRoles()) == 0){
+            $comments = $commentRepository->findBy(['author' => $user->getId()], ['created_date' => 'DESC']);
+            $articlesLikes = [];
+            if ($user->getArticleLiked() != null) {
+                foreach (explode(",", $user->getArticleLiked()) as $index => $liked) {
+                    $articlesLikes[$index] = $articleRepository->find($liked);
+                }
+            }
+            $articlesShared = [];
+            if ($user->getArticleShared() != null) {
+                foreach (explode(",", $user->getArticleShared()) as $index => $shared) {
+                    $articlesShared[$index] = $articleRepository->find($shared);
+                }
+            }
+            dump($articlesLikes);
+            dump(count($articlesShared));
+            dump(($articlesShared));
+            dump($user);
+        }
         return $this->render('user/show.html.twig', [
             'user' => $user,
+            'comments' => $comments,
+            'likes' => $articlesLikes,
+            'shares' => $articlesShared
         ]);
     }
 
@@ -87,7 +101,7 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('user_index');
+            return $this->redirectToRoute('user_show', ['id' => $user->getId()]);
         }
 
         return $this->render('user/edit.html.twig', [
@@ -107,6 +121,6 @@ class UserController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('user_index');
+        return $this->redirectToRoute('default');
     }
 }
