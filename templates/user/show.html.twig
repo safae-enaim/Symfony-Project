@@ -229,8 +229,51 @@
 				{% endif %}
 			</div>
 			<div id="tabUserSharedArticles">
-				<h2>Mes articles partagés</h2>
-
+				{% if shares|length == 0 %}
+					<h2>Vous n'avez aucun article partagé</h2>
+				{% else %}
+					<h2>{{ shares.getTotalItemCount }} articles partagés</h2>
+					<div class="navigation">
+						{{ knp_pagination_render(shares) }}
+					</div>
+					{% for article in shares %}
+						{% set expr = loop.index is divisible by(2) %}
+						<div class="card article {{ expr ? 'bg-primary' : 'bg-secondary' }} mb-3">
+							<h3 class="card-header">
+								{{ article.getTitle() }}
+							</h3>
+							<div>
+								<a href="{{ path('displayArticle', {'id': article.id}) }}"><img class="img-article" alt='{{article.getPicture().getAlt()}}' src='{{article.getPicture().getUrl()}}' height="200"/></a>
+							</div>
+							<div class="body-text">
+								<p class="card-text">{{ article.getResume() }}...</p>
+								<a class="{{ expr ? 'text-secondary' : 'text-primary' }}" href="{{ path('displayArticle', {'id': article.id}) }}"> Lire la suite</a>
+							</div>
+							<div class="body-text">
+								<p class="{{ expr ? 'text-secondary' : 'text-primary' }} body-footer-first-elem">{{article.getComments.count}}
+									commentaires
+								</p>
+								<p class="badge badge-pill badge-success body-footer-last-elem">{{article.getLiked()}} Likes
+								</p>
+								<p class="badge badge-pill badge-info body-footer-last-elem">{{article.getShared()}} Shares
+								</p>
+							</div>
+							<div>
+								{# Liste des categories #}
+								{% for cate in article.getFakeCate() %}
+									<span class="badge badge-pill {{ expr ? ' badge-secondary' : 'badge-primary' }}">{{cate}}</span>
+								{% endfor %}
+							</div>
+							{# Date de creation et nom de l'auteur #}
+							<div class="card-footer text-muted ">
+								Crée le:
+								{{ article.getDate() }}
+								par
+								{{ article.getUser().getEmail() }}
+							</div>
+						</div>
+					{% endfor %}
+				{% endif %}
 			</div>
 			<div id="tabUserCommentedArticles">
 				<h2>Mes articles commentés</h2>
