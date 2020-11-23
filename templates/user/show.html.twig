@@ -135,7 +135,7 @@
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<div class="d-flex w-100 justify-content-between">
 										<h5 class="mb-1">Article: {{ comment.article.title }}</h5>
-										<small>{{ comment.date|date("d M Y", "Europe/Paris")  }}</small>
+										<small>{{ comment.date }}</small>
 									</div>
 									<p class="mb-1">{{ comment.content }}</p>
 	{#								<small><a href="{{ path() }}"></a></small>#}
@@ -322,7 +322,7 @@
 								<div class="card-header text-primary">{{ comment.getAuthor().getEmail() }}</div>
 								<div class="card-body">
 									<p class="card-text text-secondary">{{ comment.getContent() }}</p>
-									<small>{{ comment.date|date("d M Y", "Europe/Paris") }}</small>
+									<small>{{ comment.date }}</small>
 								</div>
 							</div>
 						</div>

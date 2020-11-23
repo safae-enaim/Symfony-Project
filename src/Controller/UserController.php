@@ -62,7 +62,7 @@ class UserController extends AbstractController
         $pagArticlesLikes = [];
         $pagArticlesShared = [];
         if (array_search("ROLE_USER", $user->getRoles()) == 0){
-            $comments = $commentRepository->findBy(['author' => $user->getId()], ['created_date' => 'DESC']);
+            $comments = $commentRepository->findBy(['author' => $user->getId()], ['created_date' => 'ASC']);
             $pagComments = $paginator->paginate(
                 $comments,
                 $request->query->getInt('page', 1),

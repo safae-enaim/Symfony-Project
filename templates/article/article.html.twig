@@ -56,8 +56,11 @@
 		<button type="button" class="btn btn-outline-info back-button">Retour</button>
 	</div>
 	<div class="form-group">
-		<textarea class="form-control" id="exampleTextarea" rows="3" placeholder="Entrez votre commentaire.."></textarea>
-		<button type="submit" class="btn btn-primary">Envoyé</button>
+		<form action="{{ path('commentArticle', {'id': article.getId()}) }}" method="post">
+			<input type="text" name="user" id="user" value="{{ app.user.id }}" hidden>
+			<textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Entrez votre commentaire.."></textarea>
+			<button type="submit" class="btn btn-primary">Envoyer</button>
+		</form>
 	</div>
 	{# Liste des coms #}
 	{% for com in article.getComments() %}

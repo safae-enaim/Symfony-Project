@@ -4,11 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Category;
+use App\Entity\Comment;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
+use App\Repository\CommentStateRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -35,6 +40,35 @@ class ArticleController extends AbstractController
         return $this->render('article/article.html.twig', [
             'article' => $article,
         ]);
+    }
+
+    /**
+     * @Route("/{id}/comment", name="commentArticle", methods={"GET","POST"})
+     * @param Request $request
+     * @param ArticleRepository $articleRepository
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function sendComment (Request $request, ArticleRepository $articleRepository, UserRepository $userRepository, CommentStateRepository  $commentStateRepository): Response
+    {
+        $params = $request->request;
+        $comment = new Comment();
+        $currentDate = new \DateTimeImmutable;
+        $currentDate->getTimestamp();
+        $idArcile = $request->attributes->get('id');
+        $comment
+            ->setAuthor($userRepository->findOneBy(['id' =>  $params->get('user')]))
+            ->setArticle($articleRepository->findOneBy(['id' => $idArcile]))
+            ->setContent($params->get('comment'))
+            ->setState($commentStateRepository->findOneBy(['name' => 'waiting']))
+            ->setCreatedDate($currentDate)
+        ;
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($comment);
+        $manager->flush();
+
+        $this->addFlash('success', 'Votre commentaire a bien été enregistré. Il doit être approuvé par un auteur avant d\'être affiché');
+        return $this->redirectToRoute('displayArticle', ['id' => $idArcile]);
     }
 
     /**
