@@ -59,6 +59,7 @@ class UserController extends AbstractController
     public function show(User $user,PaginatorInterface $paginator, CommentRepository $commentRepository, ArticleRepository $articleRepository, Request $request): Response
     {
         $pagComments = [];
+        $pagAllComments = [];
         $pagArticlesLikes = [];
         $pagArticlesShared = [];
         $pagAdminArticles = [];
@@ -125,11 +126,25 @@ class UserController extends AbstractController
                 'size' => 'small',
                 'span_class' => 'btn btn-outline-success'
             ]);
-            dump($pagAdminArticles);
+            //gestion des commentaires
+            $allCcomments = $commentRepository->findAll();
+            rsort($allCcomments);
+            $pagAllComments = $paginator->paginate(
+                $allCcomments,
+                $request->query->getInt('page', 1),
+                10
+            );
+            $pagAllComments->setCustomParameters([
+                'align' => 'center',
+                'size' => 'small',
+                'span_class' => 'btn btn-outline-success'
+            ]);
+            dump($pagAllComments);
         }
         return $this->render('user/show.html.twig', [
             'user' => $user,
             'comments' => $pagComments,
+            'allComments' => $pagAllComments,
             'likes' => $pagArticlesLikes,
             'shares' => $pagArticlesShared,
             'adminArticles' => $pagAdminArticles

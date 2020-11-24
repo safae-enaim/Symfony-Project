@@ -143,6 +143,26 @@
 			</div>
 			<div id="tabAdminComments">
 				<h2>Gestion des commentaires</h2>
+				<div class="jumbotron allArticles">
+					<div class="list-group">
+						{% if allComments|length == 0 %}
+							<div class="d-flex w-100 justify-content-between">
+								<h5 class="mb-1">Aucun commentaire trouvé</h5>
+							</div>
+						{% else %}
+							{% for comment in allComments.items|slice(0,5) %}
+								<div class="list-group-item list-group-item-action flex-column align-items-start">
+									<div class="d-flex w-100 justify-content-between">
+										<h4 class="mb-1">{{ comment.getAuthor().getEmail() }} a commenté</h4>
+										<small>{{ comment.getDate() }}</small>
+									</div>
+									<p class="mb-1">sur l'article {{ comment.getArticle().getTitle() }}</p>
+									<small>{{ comment.content }}</small>
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+				</div>
 			</div>
 		{% elseif app.user and is_granted("ROLE_USER") %}
 			<div id="tabUserAccueil" class="bg-dark">
