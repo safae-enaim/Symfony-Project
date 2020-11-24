@@ -101,7 +101,7 @@ class Comment
 
     public function getState(): ?CommentState
     {
-        return $this->article;
+        return $this->state;
     }
 
     public function setState(?CommentState $CommentState): self

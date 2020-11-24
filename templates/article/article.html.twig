@@ -28,7 +28,7 @@
 		<hr class="my-4">
 		<div class="footer-container-article">
 			<div class="text-container-article">
-				<span class="text-muted">{{article.getComments.count}} commentaires
+				<span class="text-muted">{{article.getDisplayComments.count}} commentaires
 				</span>
 			</div>
 			<div class="button-container-article">
@@ -63,7 +63,7 @@
 		</form>
 	</div>
 	{# Liste des coms #}
-	{% for com in article.getComments() %}
+	{% for com in article.getDisplayComments() %}
 		<div class="card bg-light mb-3">
 			<div class="card-header text-primary">{{ com.getAuthor().getEmail() }}</div>
 			<div

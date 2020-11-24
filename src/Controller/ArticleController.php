@@ -25,11 +25,9 @@ class ArticleController extends AbstractController
     /**
      * @Route("/", name="article_index", methods={"GET"})
      */
-    public function index(ArticleRepository $articleRepository): Response
+    public function index(): Response
     {
-        return $this->render('article/index.html.twig', [
-            'articles' => $articleRepository->displayArticles(),
-        ]);
+        return $this->redirectToRoute('default');
     }
 
     /**
@@ -37,6 +35,7 @@ class ArticleController extends AbstractController
     */
     public function oneArticle (Article $article): Response
     {
+        $article->getDisplayComments();
         return $this->render('article/article.html.twig', [
             'article' => $article,
         ]);

@@ -245,6 +245,19 @@ class Article
     {
         return $this->comments;
     }
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getDisplayComments(): Collection
+    {
+        $displayed = clone($this->comments);
+        foreach($this->comments as  $index => $com){
+            if($com->getState()->getName() == 'waiting'){
+                unset($displayed[$index]);
+            }
+        }
+        return $displayed;
+    }
 
     public function getDate(): string{
         return date('d/m/G', $this->getCreationDate()->getTimestamp());

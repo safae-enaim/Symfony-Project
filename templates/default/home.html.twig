@@ -25,7 +25,7 @@
 				</div>
 				{# nombre de commentaires, likes et shares #}
 				<div class="body-text">
-					<p class="{{ expr ? 'text-secondary' : 'text-primary' }} body-footer-first-elem">{{article.getComments.count}}
+					<p class="{{ expr ? 'text-secondary' : 'text-primary' }} body-footer-first-elem">{{article.getDisplayComments.count}}
 						commentaires
 					</p>
 					<p class="badge badge-pill badge-success body-footer-last-elem">{{article.getLiked()}} Likes
