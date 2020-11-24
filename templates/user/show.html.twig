@@ -70,13 +70,79 @@
 		</ul>
 		{% if app.user and is_granted("ROLE_ADMIN") %}
 			<div id="tabAdminIndex">
-				<h2>Tableau de bord</h2>
+				<h2>Derniers articles</h2>
+				<div class="jumbotron allArticles">
+					<div class="list-group">
+						{% if adminArticles|length == 0 %}
+							<div class="d-flex w-100 justify-content-between">
+								<h5 class="mb-1">Aucun article trouvé</h5>
+							</div>
+						{% else %}
+							{% for article in adminArticles.items|slice(0,5) %}
+								<div class="list-group-item list-group-item-action flex-column align-items-start">
+									<a href="{{ path('displayArticle', {'id': article.id}) }}"><img src="{{ article.getPicture().getUrl() }}" alt="{{article.getPicture().getAlt()}}" height="200"></a>
+									<div class="d-flex w-100 justify-content-between">
+										<h4 class="mb-1">{{ article.title }}</h4>
+										<small>{{ article.getDate() }}</small>
+									</div>
+									<div>
+										{# Liste des categories #}
+										{% for cate in article.getFakeCate() %}
+											<span class="badge badge-pill badge-primary">{{cate}}</span>
+										{% endfor %}
+									</div>
+									<small>par {{ article.getUser().getEmail() }}</small>
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+				</div>
 			</div>
 			<div id="tabAdminArticles">
-				<h2>Mes articles</h2>
+				<h2>Tous les articles</h2>
+				<a class="btn btn-info" href="{{ path('article_new') }}">Nouveau</a>
+				<div class="jumbotron writedArticles">
+					<div class="list-group">
+						{% if adminArticles|length == 0 %}
+							<div class="d-flex w-100 justify-content-between">
+								<h5 class="mb-1">Aucun article trouvé</h5>
+							</div>
+						{% else %}
+							<h2>{{ adminArticles.getTotalItemCount }} aricles</h2>
+							<div class="navigation">
+								{{ knp_pagination_render(adminArticles) }}
+							</div>
+							{% for article in adminArticles.items %}
+								<div class="list-group-item list-group-item-action flex-column align-items-start">
+									<a href="{{ path('displayArticle', {'id': article.id}) }}"><img src="{{ article.getPicture().getUrl() }}" alt="{{article.getPicture().getAlt()}}" height="200"></a>
+									{% if article.getUser().getId() == app.user.id and (article.notification!=null and article.notification >0) %}
+										<small style="position: absolute" class="mx-1 badge badge-pill badge-info">{{ article.notification }} commentaire(s) en attente de validation</small>
+									{% endif %}
+									<div class="d-flex w-100 justify-content-between">
+										<h4 class="mb-1">{{ article.title }}</h4>
+										<small>{{ article.getDate() }}</small>
+									</div>
+									<div>
+										{# Liste des categories #}
+										{% for cate in article.getFakeCate() %}
+											<span class="badge badge-pill badge-primary">{{cate}}</span>
+										{% endfor %}
+									</div>
+									<div>
+										<small>par {{ article.getUser().getEmail() }}</small>
+									</div>
+									<div class="my-3">
+										<a class="btn btn-warning" href="{{ path('article_edit', {'id': article.id}) }}">modifier</a>
+										<a class="btn btn-danger" href="{{ path('article_delete', {'id': article.id}) }}">supprimer</a>
+									</div>
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+				</div>
 			</div>
 			<div id="tabAdminComments">
-				<h2>Gestion des cmmentaires</h2>
+				<h2>Gestion des commentaires</h2>
 			</div>
 		{% elseif app.user and is_granted("ROLE_USER") %}
 			<div id="tabUserAccueil" class="bg-dark">

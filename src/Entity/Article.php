@@ -83,6 +83,11 @@ class Article
      */
     private $comments;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $notification;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -293,5 +298,17 @@ class Article
     public function getFakeCate()
     {
         return array ('Categorie 1', 'Categorie 2', 'Categorie 3');
+    }
+
+    public function getNotification(): ?int
+    {
+        return $this->notification;
+    }
+
+    public function setNotification(?int $notification): self
+    {
+        $this->notification = $notification;
+
+        return $this;
     }
 }

@@ -61,6 +61,7 @@ class UserController extends AbstractController
         $pagComments = [];
         $pagArticlesLikes = [];
         $pagArticlesShared = [];
+        $pagAdminArticles = [];
         if (array_search("ROLE_USER", $user->getRoles()) == 0){
             //gestion des commentaires
             $comments = $commentRepository->findBy(['author' => $user->getId()], ['created_date' => 'ASC']);
@@ -110,12 +111,28 @@ class UserController extends AbstractController
                 'size' => 'small',
                 'span_class' => 'btn btn-outline-success'
             ]);
+        } else if (array_search("ROLE_ADMIN", $user->getRoles()) == 0){
+            //gestion des articles
+            $articles = $articleRepository->findAll();
+            rsort($articles);
+            $pagAdminArticles = $paginator->paginate(
+                $articles,
+                $request->query->getInt('page', 1),
+                10
+            );
+            $pagAdminArticles->setCustomParameters([
+                'align' => 'center',
+                'size' => 'small',
+                'span_class' => 'btn btn-outline-success'
+            ]);
+            dump($pagAdminArticles);
         }
         return $this->render('user/show.html.twig', [
             'user' => $user,
             'comments' => $pagComments,
             'likes' => $pagArticlesLikes,
-            'shares' => $pagArticlesShared
+            'shares' => $pagArticlesShared,
+            'adminArticles' => $pagAdminArticles
         ]);
     }
 
