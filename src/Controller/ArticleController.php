@@ -62,7 +62,13 @@ class ArticleController extends AbstractController
             ->setState($commentStateRepository->findOneBy(['name' => 'waiting']))
             ->setCreatedDate($currentDate)
         ;
+        $article = $articleRepository->findOneBy(['id' => $idArcile]);
+        dump($article);
+        $article->setNotification($article->getNotification()+1);
+        dump($article);
+
         $manager = $this->getDoctrine()->getManager();
+        $manager->persist($article);
         $manager->persist($comment);
         $manager->flush();
 
