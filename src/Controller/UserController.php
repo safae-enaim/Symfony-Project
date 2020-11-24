@@ -62,12 +62,20 @@ class UserController extends AbstractController
         $pagArticlesLikes = [];
         $pagArticlesShared = [];
         if (array_search("ROLE_USER", $user->getRoles()) == 0){
+            //gestion des commentaires
             $comments = $commentRepository->findBy(['author' => $user->getId()], ['created_date' => 'ASC']);
             $pagComments = $paginator->paginate(
                 $comments,
                 $request->query->getInt('page', 1),
                 10
             );
+            $pagComments->setCustomParameters([
+                'align' => 'center',
+                'size' => 'small',
+                'span_class' => 'btn btn-outline-success'
+            ]);
+
+            // gestion des articles aimés
             $articlesLikes = [];
             if ($user->getArticleLiked() != null) {
                 foreach (explode(",", $user->getArticleLiked()) as $index => $liked) {
@@ -79,7 +87,13 @@ class UserController extends AbstractController
                 $request->query->getInt('page', 1),
                 10
             );
+            $pagArticlesLikes->setCustomParameters([
+                'align' => 'center',
+                'size' => 'small',
+                'span_class' => 'btn btn-outline-success'
+            ]);
 
+            //gestion des articles partagés
             $articlesShared = [];
             if ($user->getArticleShared() != null) {
                 foreach (explode(",", $user->getArticleShared()) as $index => $shared) {
@@ -91,6 +105,11 @@ class UserController extends AbstractController
                 $request->query->getInt('page', 1),
                 10
             );
+            $pagArticlesShared->setCustomParameters([
+                'align' => 'center',
+                'size' => 'small',
+                'span_class' => 'btn btn-outline-success'
+            ]);
         }
         return $this->render('user/show.html.twig', [
             'user' => $user,
