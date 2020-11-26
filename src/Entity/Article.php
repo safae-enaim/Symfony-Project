@@ -59,7 +59,7 @@ class Article
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
     private $content;
 
@@ -212,6 +212,10 @@ class Article
         return $this->shared;
     }
 
+    public function addShare()
+    {
+        $this->shared += 1;
+    }
     public function setShared(int $shared): self
     {
         $this->shared = $shared;
@@ -222,6 +226,16 @@ class Article
     public function getLiked(): ?int
     {
         return $this->liked;
+    }
+
+    public function addLike()
+    {
+        $this->liked += 1;
+    }
+
+    public function removeLike()
+    {
+        $this->liked -= 1;
     }
 
     public function setLiked(int $liked): self

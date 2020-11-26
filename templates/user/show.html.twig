@@ -87,11 +87,12 @@
 									</div>
 									<div>
 										{# Liste des categories #}
-										{% for cate in article.getFakeCate() %}
-											<span class="badge badge-pill badge-primary">{{cate}}</span>
+										{% for category in article.getCategories() %}
+											<span class="badge badge-pill badge-primary">{{category.getName()}}</span>
 										{% endfor %}
 									</div>
-									<small>par {{ article.getUser().getEmail() }}</small>
+									<small>par
+										{{ article.getUser().getEmail() }}</small>
 								</div>
 							{% endfor %}
 						{% endif %}
@@ -108,7 +109,8 @@
 								<h5 class="mb-1">Aucun article trouvé</h5>
 							</div>
 						{% else %}
-							<h2>{{ adminArticles.getTotalItemCount }} aricles</h2>
+							<h2>{{ adminArticles.getTotalItemCount }}
+								articles</h2>
 							<div class="navigation">
 								{{ knp_pagination_render(adminArticles) }}
 							</div>
@@ -116,7 +118,8 @@
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<a href="{{ path('displayArticle', {'id': article.id}) }}"><img src="{{ article.getPicture().getUrl() }}" alt="{{article.getPicture().getAlt()}}" height="200"></a>
 									{% if article.getUser().getId() == app.user.id and (article.notification!=null and article.notification >0) %}
-										<small style="position: absolute" class="mx-1 badge badge-pill badge-info">{{ article.notification }} commentaire(s) en attente de validation</small>
+										<small style="position: absolute" class="mx-1 badge badge-pill badge-info">{{ article.notification }}
+											commentaire(s) en attente de validation</small>
 									{% endif %}
 									<div class="d-flex w-100 justify-content-between">
 										<h4 class="mb-1">{{ article.title }}</h4>
@@ -124,12 +127,13 @@
 									</div>
 									<div>
 										{# Liste des categories #}
-										{% for cate in article.getFakeCate() %}
-											<span class="badge badge-pill badge-primary">{{cate}}</span>
+										{% for category in article.getCategories() %}
+											<span class="badge badge-pill badge-primary">{{category.getName()}}</span>
 										{% endfor %}
 									</div>
 									<div>
-										<small>par {{ article.getUser().getEmail() }}</small>
+										<small>par
+											{{ article.getUser().getEmail() }}</small>
 									</div>
 									<div class="my-3">
 										<a class="btn btn-warning" href="{{ path('article_edit', {'id': article.id}) }}">modifier</a>
@@ -153,10 +157,20 @@
 							{% for comment in allComments.items|slice(0,5) %}
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<div class="d-flex w-100 justify-content-between">
-										<h4 class="mb-1">{{ comment.getAuthor().getEmail() }} a commenté</h4>
+										<h4 class="mb-1">{{ comment.getAuthor().getEmail() }}
+											a commenté</h4>
+										<span>{{comment.getState().getName()}}</span>
+										{% if comment.getState().getName() != 'approved' %}
+											<a href="{{ path('validComment', {'id': comment.getId()}) }}" method="post">Validé</a>
+										{% endif %}
+										{% if comment.getState().getName() != 'reject' %}
+											<a href="{{ path('rejectComment', {'id': comment.getId()}) }}" method="post">Rejeté</a>
+										{% endif %}
 										<small>{{ comment.getDate() }}</small>
 									</div>
-									<p class="mb-1">sur l'article {{ comment.getArticle().getTitle() }}</p>
+									<p class="mb-1">sur l'article
+										<strong>{{ comment.getArticle().getTitle() }}</strong>
+									</p>
 									<small>{{ comment.content }}</small>
 								</div>
 							{% endfor %}
@@ -168,7 +182,8 @@
 			<div id="tabUserAccueil" class="bg-dark">
 				<h2>Tableau de bord</h2>
 				<div class="jumbotron  likedArticles">
-					<h3> Mes articles aimés</h3>
+					<h3>
+						Mes articles aimés</h3>
 					<div class="list-group">
 						{% if likes|length == 0 %}
 							<div class="d-flex w-100 justify-content-between">
@@ -178,18 +193,20 @@
 							{% for article in likes|slice(0,5) %}
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<div class="d-flex w-100 justify-content-between">
-										<h5 class="mb-1">Article: {{ article.title }}</h5>
-{#										<small>3 days ago</small>#}
+										<h5 class="mb-1">Article:
+											{{ article.title }}</h5>
+										{#										<small>3 days ago</small>#}
 									</div>
 									<p class="mb-1">{{ article.content }}</p>
-{#									<small>Donec id elit non mi porta.</small>#}
+									{#									<small>Donec id elit non mi porta.</small>#}
 								</div>
 							{% endfor %}
 						{% endif %}
 					</div>
 				</div>
 				<div class="jumbotron  sharedArticles">
-					<h3> Mes articles partagés</h3>
+					<h3>
+						Mes articles partagés</h3>
 					<div class="list-group">
 						{% if shares|length == 0 %}
 							<div class="d-flex w-100 justify-content-between">
@@ -199,8 +216,9 @@
 							{% for article in shares|slice(0,5) %}
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<div class="d-flex w-100 justify-content-between">
-										<h5 class="mb-1">Article: {{ article.title }}</h5>
-	{#									<small>3 days ago</small>#}
+										<h5 class="mb-1">Article:
+											{{ article.title }}</h5>
+										{#									<small>3 days ago</small>#}
 									</div>
 									<p class="mb-1">{{ article.content }}</p>
 									<small>Donec id elit non mi porta.</small>
@@ -210,21 +228,23 @@
 					</div>
 				</div>
 				<div class="jumbotron commentedArticles">
-					<h3> Mes articles commmentés</h3>
+					<h3>
+						Mes articles commmentés</h3>
 					<div class="list-group">
 						{% if comments|length == 0 %}
-						<div class="d-flex w-100 justify-content-between">
-							<h5 class="mb-1">Vous n'avez aucun article commenté</h5>
-						</div>
+							<div class="d-flex w-100 justify-content-between">
+								<h5 class="mb-1">Vous n'avez aucun article commenté</h5>
+							</div>
 						{% else %}
 							{% for comment in comments|slice(0,5) %}
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<div class="d-flex w-100 justify-content-between">
-										<h5 class="mb-1">Article: {{ comment.article.title }}</h5>
+										<h5 class="mb-1">Article:
+											{{ comment.article.title }}</h5>
 										<small>{{ comment.date }}</small>
 									</div>
 									<p class="mb-1">{{ comment.content }}</p>
-	{#								<small><a href="{{ path() }}"></a></small>#}
+									{#								<small><a href="{{ path() }}"></a></small>#}
 								</div>
 							{% endfor %}
 						{% endif %}
@@ -271,7 +291,8 @@
 				{% if likes|length == 0 %}
 					<h2>Vous n'avez aucun article aimé</h2>
 				{% else %}
-					<h2>{{ likes.getTotalItemCount }} articles aimés</h2>
+					<h2>{{ likes.getTotalItemCount }}
+						articles aimés</h2>
 					<div class="navigation">
 						{{ knp_pagination_render(likes) }}
 					</div>
@@ -286,21 +307,24 @@
 							</div>
 							<div class="body-text">
 								<p class="card-text">{{ article.getResume() }}...</p>
-								<a class="{{ expr ? 'text-secondary' : 'text-primary' }}" href="{{ path('displayArticle', {'id': article.id}) }}"> Lire la suite</a>
+								<a class="{{ expr ? 'text-secondary' : 'text-primary' }}" href="{{ path('displayArticle', {'id': article.id}) }}">
+									Lire la suite</a>
 							</div>
 							<div class="body-text">
 								<p class="{{ expr ? 'text-secondary' : 'text-primary' }} body-footer-first-elem">{{article.getComments.count}}
 									commentaires
 								</p>
-								<p class="badge badge-pill badge-success body-footer-last-elem">{{article.getLiked()}} Likes
+								<p class="badge badge-pill badge-success body-footer-last-elem">{{article.getLiked()}}
+									Likes
 								</p>
-								<p class="badge badge-pill badge-info body-footer-last-elem">{{article.getShared()}} Shares
+								<p class="badge badge-pill badge-info body-footer-last-elem">{{article.getShared()}}
+									Shares
 								</p>
 							</div>
 							<div>
 								{# Liste des categories #}
-								{% for cate in article.getFakeCate() %}
-									<span class="badge badge-pill {{ expr ? ' badge-secondary' : 'badge-primary' }}">{{cate}}</span>
+								{% for category in article.getCategories() %}
+									<span class="badge badge-pill badge-primary">{{category.getName()}}</span>
 								{% endfor %}
 							</div>
 							{# Date de creation et nom de l'auteur #}
@@ -318,7 +342,8 @@
 				{% if shares|length == 0 %}
 					<h2>Vous n'avez aucun article partagé</h2>
 				{% else %}
-					<h2>{{ shares.getTotalItemCount }} articles partagés</h2>
+					<h2>{{ shares.getTotalItemCount }}
+						articles partagés</h2>
 					<div class="navigation">
 						{{ knp_pagination_render(shares) }}
 					</div>
@@ -333,21 +358,24 @@
 							</div>
 							<div class="body-text">
 								<p class="card-text">{{ article.getResume() }}...</p>
-								<a class="{{ expr ? 'text-secondary' : 'text-primary' }}" href="{{ path('displayArticle', {'id': article.id}) }}"> Lire la suite</a>
+								<a class="{{ expr ? 'text-secondary' : 'text-primary' }}" href="{{ path('displayArticle', {'id': article.id}) }}">
+									Lire la suite</a>
 							</div>
 							<div class="body-text">
 								<p class="{{ expr ? 'text-secondary' : 'text-primary' }} body-footer-first-elem">{{article.getComments.count}}
 									commentaires
 								</p>
-								<p class="badge badge-pill badge-success body-footer-last-elem">{{article.getLiked()}} Likes
+								<p class="badge badge-pill badge-success body-footer-last-elem">{{article.getLiked()}}
+									Likes
 								</p>
-								<p class="badge badge-pill badge-info body-footer-last-elem">{{article.getShared()}} Shares
+								<p class="badge badge-pill badge-info body-footer-last-elem">{{article.getShared()}}
+									Shares
 								</p>
 							</div>
 							<div>
 								{# Liste des categories #}
-								{% for cate in article.getFakeCate() %}
-									<span class="badge badge-pill {{ expr ? ' badge-secondary' : 'badge-primary' }}">{{cate}}</span>
+								{% for category in article.getCategories() %}
+									<span class="badge badge-pill badge-primary">{{category.getName()}}</span>
 								{% endfor %}
 							</div>
 							{# Date de creation et nom de l'auteur #}
@@ -365,7 +393,8 @@
 				{% if comments|length == 0 %}
 					<h2>Vous n'avez aucun article commenté</h2>
 				{% else %}
-					<h2>{{ comments.getTotalItemCount }} articles commentés</h2>
+					<h2>{{ comments.getTotalItemCount }}
+						articles commentés</h2>
 					<div class="navigation">
 						{{ knp_pagination_render(comments) }}
 					</div>
@@ -380,21 +409,24 @@
 							</div>
 							<div class="body-text">
 								<p class="card-text">{{ comment.article.getResume() }}...</p>
-								<a class="{{ expr ? 'text-secondary' : 'text-primary' }}" href="{{ path('displayArticle', {'id': comment.article.id}) }}"> Lire la suite</a>
+								<a class="{{ expr ? 'text-secondary' : 'text-primary' }}" href="{{ path('displayArticle', {'id': comment.article.id}) }}">
+									Lire la suite</a>
 							</div>
 							<div class="body-text">
 								<p class="{{ expr ? 'text-secondary' : 'text-primary' }} body-footer-first-elem">{{comment.article.getComments.count}}
 									commentaires
 								</p>
-								<p class="badge badge-pill badge-success body-footer-last-elem">{{comment.article.getLiked()}} Likes
+								<p class="badge badge-pill badge-success body-footer-last-elem">{{comment.article.getLiked()}}
+									Likes
 								</p>
-								<p class="badge badge-pill badge-info body-footer-last-elem">{{comment.article.getShared()}} Shares
+								<p class="badge badge-pill badge-info body-footer-last-elem">{{comment.article.getShared()}}
+									Shares
 								</p>
 							</div>
 							<div>
 								{# Liste des categories #}
-								{% for cate in comment.article.getFakeCate() %}
-									<span class="badge badge-pill {{ expr ? ' badge-secondary' : 'badge-primary' }}">{{cate}}</span>
+								{% for category in comment.article.getCategories() %}
+									<span class="badge badge-pill badge-primary">{{category.getName()}}</span>
 								{% endfor %}
 							</div>
 							{# Date de creation et nom de l'auteur #}
