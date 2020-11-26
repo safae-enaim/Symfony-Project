@@ -77,9 +77,11 @@ class ArticleController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="article_new", methods={"GET","POST"})
+     * @Route("New", name="article_new", methods={"GET","POST"})
+     * @param Request $request
+     * @return Response
      */
-    public function new(Request $request, CategoryRepository $categoryRepository): Response
+    public function new(Request $request): Response
     {
         $article = new Article();
         $category = new Category();
