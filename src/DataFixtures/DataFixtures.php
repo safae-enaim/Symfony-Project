@@ -91,7 +91,7 @@ class DataFixtures extends Fixture
             ->setShared(0)
             ->setLiked(1)
             ->setVisible(true)
-            ->setNotification(1)
+            ->setNotification(0)
             ->setPicture($randomPicture);
             }
             $article->setTitle($faker->word)
@@ -101,7 +101,7 @@ class DataFixtures extends Fixture
                 ->setShared(0)
                 ->setLiked(0)
                 ->setVisible(true)
-                ->setNotification(1)
+                ->setNotification(0)
                 ->setPicture($randomPicture);
             $categoriesNumber = $faker->numberBetween(1 , count($categories) - 1);
             for ($y = 0; $y < $categoriesNumber; $y++) {

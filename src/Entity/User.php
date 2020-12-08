@@ -72,20 +72,24 @@ class User implements UserInterface
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity=Article::class, inversedBy="usersLikes")
+     * @ORM\JoinTable(name="articleLike_user")
      */
-    private $articleLiked;
+    private $articlesLiked;
 
     /**
-     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity=Article::class, inversedBy="usersShares")
+     * @ORM\JoinTable(name="articleShare_user")
      */
-    private $articleShared;
+    private $articlesShared;
 
     public function __construct()
     {
         $this->userRoles = new ArrayCollection();
         $this->articles = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->articlesLiked = new ArrayCollection();
+        $this->articlesShared = new ArrayCollection();
     }
 
 
@@ -290,30 +294,50 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getArticleLiked(): ? Collection
+    /**
+     * @return Collection|Article[]
+     */
+    public function getArticlesLiked(): Collection
     {
-        return $this->articleLiked;
+        return $this->articlesLiked;
     }
 
-    public function addLike(Article $article): self
+    public function addArticlesLiked(Article $articlesLiked): self
     {
-        $this->articleLiked[] = $article;
+        if (!$this->articlesLiked->contains($articlesLiked)) {
+            $this->articlesLiked[] = $articlesLiked;
+        }
+
         return $this;
     }
 
-    public function removeLike(Article $article): self
+    public function removeArticlesLiked(Article $articlesLiked): self
     {
-        $this->articleLiked[] = $article;
+        $this->articlesLiked->removeElement($articlesLiked);
+
         return $this;
     }
-    public function getArticleShared(): ? Collection
+
+    /**
+     * @return Collection|Article[]
+     */
+    public function getArticlesShared(): Collection
     {
-        return $this->articleShared;
+        return $this->articlesShared;
     }
 
-    public function setArticleShared(?string $articleShared): self
+    public function addArticlesShared(Article $articlesShared): self
     {
-        $this->articleShared = $articleShared;
+        if (!$this->articlesShared->contains($articlesShared)) {
+            $this->articlesShared[] = $articlesShared;
+        }
+
+        return $this;
+    }
+
+    public function removeArticlesShared(Article $articlesShared): self
+    {
+        $this->articlesShared->removeElement($articlesShared);
 
         return $this;
     }

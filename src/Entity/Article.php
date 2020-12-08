@@ -88,10 +88,22 @@ class Article
      */
     private $notification;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="articlesLiked")
+     */
+    private $usersLikes;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="articlesShared")
+     */
+    private $usersShares;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->usersLikes = new ArrayCollection();
+        $this->usersShares = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -216,6 +228,10 @@ class Article
     {
         $this->shared += 1;
     }
+    public function removeShare()
+    {
+        $this->shared -= 1;
+    }
     public function setShared(int $shared): self
     {
         $this->shared = $shared;
@@ -322,6 +338,60 @@ class Article
     public function setNotification(?int $notification): self
     {
         $this->notification = $notification;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsersLikes(): Collection
+    {
+        return $this->usersLikes;
+    }
+
+    public function addUsersLike(User $usersLike): self
+    {
+        if (!$this->usersLikes->contains($usersLike)) {
+            $this->usersLikes[] = $usersLike;
+            $usersLike->addArticlesLiked($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersLike(User $usersLike): self
+    {
+        if ($this->usersLikes->removeElement($usersLike)) {
+            $usersLike->removeArticlesLiked($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsersShares(): Collection
+    {
+        return $this->usersShares;
+    }
+
+    public function addUsersShare(User $usersShare): self
+    {
+        if (!$this->usersShares->contains($usersShare)) {
+            $this->usersShares[] = $usersShare;
+            $usersShare->addArticlesShared($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersShare(User $usersShare): self
+    {
+        if ($this->usersShares->removeElement($usersShare)) {
+            $usersShare->removeArticlesShared($this);
+        }
 
         return $this;
     }
