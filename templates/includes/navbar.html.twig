@@ -24,31 +24,31 @@
                     <span class="sr-only">(current)</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{path('user_new')}}">Créer un compte
-                    <span class="sr-only">(current)</span>
-                </a>
-            </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-            {% if app.user %}
             <li class="nav-item">
                 <div class="dropdown">
-                    <a class="nav-link btn-lg dropdown-toggle" id="userDropdown" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true"><i class="fas fa-sign-out-alt">&nbsp;{{ app.user.firstname ? app.user.firstname : app.user.email }}</i></a>
-                    <div class="dropdown-menu" aria-labelledby="userDropdown" style="position: absolute; transform: translate3d(0px, 40px, 0px); top: 0px; left: 0px; will-change: transform;" x-placement="bottom-start">
-                        <a class="dropdown-item" href="{{ path('user_show', {'id':  app.user.id}) }}">Profile</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ path("app_logout") }}"><i class="fas fa-sign-out-alt">&nbsp;Déconnexion</i></a>
-                    </div>
+                    {% if app.user %}
+                        <a class="nav-link btn-lg dropdown-toggle" id="userDropdown" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true"><i class="fas fa-sign-out-alt">&nbsp;{{ app.user.firstname ? app.user.firstname : app.user.email }}</i></a>
+                        <div class="dropdown-menu" aria-labelledby="userDropdown" style="position: absolute; transform: translate3d(-35px, 40px, 0px); top: 0px; left: 0px; will-change: transform;" x-placement="bottom-start">
+                            <a class="dropdown-item" href="{{ path('user_show', {'id':  app.user.id}) }}">Profile</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ path("app_logout") }}"><i class="fas fa-sign-out-alt">&nbsp;Déconnexion</i></a>
+                        </div>
+                    {% else %}
+                        <a class="nav-link btn-lg dropdown-toggle" id="unknownDropdown" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">Connexion</a>
+                        <div class="dropdown-menu" aria-labelledby="unknownDropdown" style="position: absolute; transform: translate3d(-35px, 40px, 0px); top: 0px; left: 0px; will-change: transform;" x-placement="bottom-start">
+                            <a class="dropdown-item" href="{{ path('app_login') }}">
+                                <span><i class="fas fa-sign-in-alt">&nbsp;Connexion</i></span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{path('user_new')}}">Créer un compte
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </li>
-            {% else %}
-            <li class="nav-item">
-                <a class="nav-link btn-lg" href="{{path('app_login')}}">
-                    <i class="fas fa-sign-in-alt">&nbsp;Connexion</i>
-                </a>
-            </li>
-            {% endif %}
         </ul>
     </div>
 </nav>
