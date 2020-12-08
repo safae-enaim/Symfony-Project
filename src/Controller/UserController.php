@@ -59,6 +59,9 @@ class UserController extends AbstractController
      */
     public function show(User $user,PaginatorInterface $paginator, CommentRepository $commentRepository, ArticleRepository $articleRepository, Request $request): Response
     {
+        $comments = [];
+        $articlesLikes = [];
+        $articlesShared = [];
         $pagComments = [];
         $pagAllComments = [];
         $pagArticlesLikes = [];
@@ -140,11 +143,13 @@ class UserController extends AbstractController
                 'size' => 'small',
                 'span_class' => 'btn btn-outline-success'
             ]);
-            dump($pagAllComments);
         }
         return $this->render('user/show.html.twig', [
             'user' => $user,
             'comments' => $pagComments,
+            'lastComments' => $comments,
+            'lastLikes' => $articlesLikes,
+            'lastShared' => $articlesShared,
             'allComments' => $pagAllComments,
             'likes' => $pagArticlesLikes,
             'shares' => $pagArticlesShared,

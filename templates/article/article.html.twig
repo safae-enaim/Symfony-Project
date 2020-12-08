@@ -34,10 +34,8 @@
 			</div>
 			<div class="button-container-article">
 				{% if  app.user != null %}
-					<form action="{{ path('likeArticle', {'id': article.getId()}) }}" method="post">
-						<button type="button" class="btn btn-outline-{{ app.user.getArticleLiked().contains(article) ? 'success' : 'danger' }} btn-footer-article btn-sm">Like</button>
-					</form>
-					<button type="button" class="btn btn-outline-primary btn-footer-article btn-sm">Share</button>
+				<button type="button" class="btn btn-{{ app.user.getArticlesLiked().contains(article) ? 'success' : 'outline-danger' }} btn-footer-article btn-sm" id="btnLike">Like</button>
+				<button type="button" class="btn btn-{{ app.user.getArticlesShared().contains(article) ? 'success' : 'outline-primary' }} btn-footer-article btn-sm" id="btnShare">Share</button>
 				</div>
 				{% endif %}
 			</div>
@@ -49,9 +47,9 @@
 					{{ article.getUser().getEmail() }}
 				</div>
 				<div class="badge-likes-shares">
-					<span class="badge badge-pill badge-success">{{article.getLiked()}}
+					<span class="badge badge-pill badge-success"><span id="nbLikes">{{article.getLiked()}}</span>
 						Likes</span>
-					<span class="badge badge-pill badge-info">{{article.getShared()}}
+					<span class="badge badge-pill badge-info"><span id="nbShares">{{article.getShared()}}</span>
 						Shares</span>
 				</div>
 
@@ -148,3 +146,46 @@
 			}
 		</style>
 	{% endblock %}
+
+{% block javascripts %}
+
+	<script>
+		let idArticle = {{ article.getId() }};
+		let idUser = {{ app.user.id }};
+
+		let updateLike = function(){
+			let route = "/article/"+idArticle+"/add-like/"+idUser;
+			$.ajax({
+				url: route,
+				type: 'GET',
+				success: function (data, statut) {
+					$('#nbLikes').text(data);
+					$('#btnLike').toggleClass('btn-outline-primary');
+					$('#btnLike').toggleClass('btn-success');
+				},
+				error: function (resultat){
+					console.error(resultat);
+				}
+			});
+		}
+		let updateShare = function(){
+			let route = "/article/"+idArticle+"/add-share/"+idUser;
+			$.ajax({
+				url: route,
+				type: 'GET',
+				success: function (data, statut) {
+					$('#nbShares').text(data);
+					$('#btnShare').toggleClass('btn-outline-primary');
+					$('#btnShare').toggleClass('btn-success');
+				},
+				error: function (resultat){
+					console.error(resultat);
+				}
+			});
+		}
+
+		$('#btnLike').on('click',updateLike);
+		$('#btnShare').on('click',updateShare);
+
+	</script>
+{% endblock %}

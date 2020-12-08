@@ -135,10 +135,12 @@
 										<small>par
 											{{ article.getUser().getEmail() }}</small>
 									</div>
+									{% if article.getUser().getId() == app.user.id %}
 									<div class="my-3">
 										<a class="btn btn-warning" href="{{ path('article_edit', {'id': article.id}) }}">modifier</a>
 										<a class="btn btn-danger" href="{{ path('article_delete', {'id': article.id}) }}">supprimer</a>
 									</div>
+									{% endif %}
 								</div>
 							{% endfor %}
 						{% endif %}
@@ -192,12 +194,12 @@
 					<h3>
 						Mes articles aimés</h3>
 					<div class="list-group">
-						{% if likes|length == 0 %}
+						{% if lastLikes|length == 0 %}
 							<div class="d-flex w-100 justify-content-between">
 								<h5 class="mb-1">Vous n'avez aucun article aimé</h5>
 							</div>
 						{% else %}
-							{% for article in likes|slice(0,5) %}
+							{% for article in lastLikes|slice(0,5) %}
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<div class="d-flex w-100 justify-content-between">
 										<h5 class="mb-1">Article:
@@ -215,12 +217,12 @@
 					<h3>
 						Mes articles partagés</h3>
 					<div class="list-group">
-						{% if shares|length == 0 %}
+						{% if lastShared|length == 0 %}
 							<div class="d-flex w-100 justify-content-between">
 								<h5 class="mb-1">Vous n'avez aucun article Partagé</h5>
 							</div>
 						{% else %}
-							{% for article in shares|slice(0,5) %}
+							{% for article in lastShared|slice(0,5) %}
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<div class="d-flex w-100 justify-content-between">
 										<h5 class="mb-1">Article:
@@ -238,12 +240,12 @@
 					<h3>
 						Mes articles commmentés</h3>
 					<div class="list-group">
-						{% if comments|length == 0 %}
+						{% if lastComments|length == 0 %}
 							<div class="d-flex w-100 justify-content-between">
 								<h5 class="mb-1">Vous n'avez aucun article commenté</h5>
 							</div>
 						{% else %}
-							{% for comment in comments|slice(0,5) %}
+							{% for comment in lastComments|slice(0,5) %}
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<div class="d-flex w-100 justify-content-between">
 										<h5 class="mb-1">Article:

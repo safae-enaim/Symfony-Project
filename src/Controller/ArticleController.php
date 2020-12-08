@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Entity\Category;
+use App\Entity\User;
 use App\Form\ArticleType;
 use App\Repository\UserRepository;
 use App\Repository\ArticleRepository;
@@ -12,6 +13,7 @@ use App\Repository\CommentRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentStateRepository;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -66,9 +68,7 @@ class ArticleController extends AbstractController
             ->setCreatedDate($currentDate)
         ;
         $article = $articleRepository->findOneBy(['id' => $idArcile]);
-        dump($article);
         $article->setNotification($article->getNotification()+1);
-        dump($article);
 
         $manager = $this->getDoctrine()->getManager();
         $manager->persist($article);
@@ -88,11 +88,19 @@ class ArticleController extends AbstractController
     {
         $article = new Article();
         $category = new Category();
+
         $category->setName('Frisson');
         $article->addCategory($category);
 
+        $today = new \DateTime();
+        $article->setCreationDate($today);
+        $article->setShared(0);
+        $article->setLiked(0);
+        $article->setVisible(1);
+
+
         $form = $this->createForm(ArticleType::class, $article);
-        $form->handleRequest($request);
+        $form->handleRequest($article);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
@@ -155,25 +163,21 @@ class ArticleController extends AbstractController
 
 
     /**
-     * @Route("/{id}/send-comment", name="likeArticle", methods={"GET","POST"})
-     * @param Request $request
-     * @param ArticleRepository $articleRepository
-     * @param UserRepository $userRepository
+     * @Route("/{article}/add-like/{user}", name="likeArticle", methods={"GET","POST"})
+     * @param Article $article
+     * @param User $user
      * @return Response
      */
-    public function clickLikeArticle (Request $request, UserRepository $userRepository, ArticleRepository $articleRepository): Response
+    public function clickLikeArticle (Article $article,User $user)
     {
-        $params = $request->request;
-        $user = $userRepository->findOneBy(['id' =>  $params->get('user')]);
-        $idArcile = $request->attributes->get('id');
-        $article = $articleRepository->findOneBy(['id' =>  $idArcile]);
-
-        if($user->getArticleLiked()->contains($article)){
-            $user->addLike($article);
-            $article->addLike();
-        }else{
-            $user->removeLike($article);
+        if($user->getArticlesLiked()->contains($article)){
+            $user->removeArticlesLiked($article);
+            $article->removeUsersLike($user);
             $article->removeLike();
+        }else{
+            $user->addArticlesLiked($article);
+            $article->addUsersLike($user);
+            $article->addLike();
         }
         
         $manager = $this->getDoctrine()->getManager();
@@ -181,27 +185,32 @@ class ArticleController extends AbstractController
         $manager->persist($user);
         $manager->flush();
 
-        return $this->redirectToRoute('displayArticle', ['id' => $idArcile]);
-        /*
-         $params = $request->request;
-        $comment = new Comment();
-        $currentDate = new \DateTimeImmutable;
-        $currentDate->getTimestamp();
-        $idArcile = $request->attributes->get('id');
-        $comment
-            ->setAuthor($userRepository->findOneBy(['id' =>  $params->get('user')]))
-            ->setArticle($articleRepository->findOneBy(['id' => $idArcile]))
-            ->setContent($params->get('comment'))
-            ->setState($commentStateRepository->findOneBy(['name' => 'waiting']))
-            ->setCreatedDate($currentDate)
-        ;
-        $article = $articleRepository->findOneBy(['id' => $idArcile]);
-        dump($article);
-        $article->setNotification($article->getNotification()+1);
-        dump($article);
-        */
+        return new JsonResponse($article->getLiked());
+    }
+    /**
+     * @Route("/{article}/add-share/{user}", name="shareArticle", methods={"GET","POST"})
+     * @param Article $article
+     * @param User $user
+     * @return Response
+     */
+    public function clickShareArticle (Article $article,User $user)
+    {
+        if($user->getArticlesShared()->contains($article)){
+            $user->removeArticlesShared($article);
+            $article->removeUsersShare($user);
+            $article->removeShare();
+        }else{
+            $user->addArticlesShared($article);
+            $article->addUsersShare($user);
+            $article->addShare();
+        }
 
-        // return $this->redirectToRoute('displayArticle', ['id' => 12]);
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($article);
+        $manager->persist($user);
+        $manager->flush();
+
+        return new JsonResponse($article->getShared());
     }
 
 }
