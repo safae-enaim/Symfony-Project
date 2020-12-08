@@ -28,6 +28,7 @@ class UserController extends AbstractController
     /**
      * @Route("/new", name="user_new", methods={"GET","POST"})
      * @param Request $request
+     * @param RoleRepository $roleRepository
      * @return Response
      */
     public function new(Request $request, RoleRepository $roleRepository): Response
@@ -58,6 +59,10 @@ class UserController extends AbstractController
     /**
      * @Route("/{id}", name="user_show", methods={"GET"})
      * @param User $user
+     * @param PaginatorInterface $paginator
+     * @param CommentRepository $commentRepository
+     * @param ArticleRepository $articleRepository
+     * @param Request $request
      * @return Response
      */
     public function show(User $user,PaginatorInterface $paginator, CommentRepository $commentRepository, ArticleRepository $articleRepository, Request $request): Response
@@ -86,12 +91,7 @@ class UserController extends AbstractController
             ]);
 
             // gestion des articles aimés
-            $articlesLikes = [];
-            if ($user->getArticleLiked() != null) {
-                // foreach (explode(",", $user->getArticleLiked()) as $index => $liked) {
-                //     $articlesLikes[$index] = $articleRepository->find($liked);
-                // }
-            }
+            $articlesLikes = $user->getArticlesLiked();
             $pagArticlesLikes = $paginator->paginate(
                 $articlesLikes,
                 $request->query->getInt('page', 1),
@@ -104,12 +104,7 @@ class UserController extends AbstractController
             ]);
 
             //gestion des articles partagés
-            $articlesShared = [];
-            if ($user->getArticleShared() != null) {
-                // foreach (explode(",", $user->getArticleShared()) as $index => $shared) {
-                //     $articlesShared[$index] = $articleRepository->find($shared);
-                // }
-            }
+            $articlesShared = $user->getArticlesShared();
             $pagArticlesShared = $paginator->paginate(
                 $articlesShared,
                 $request->query->getInt('page', 1),

@@ -16,14 +16,21 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{path('apropos')}}">À propos
-                    <span class="sr-only">(current)</span>
+                    <span class="sr-only"></span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{path('contact_new')}}">Contact
-                    <span class="sr-only">(current)</span>
+                    <span class="sr-only"></span>
                 </a>
             </li>
+            {% if app.user and is_granted("ROLE_ADMIN") %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{path('article_new')}}">Créer un article
+                        <span class="sr-only"></span>
+                    </a>
+                </li>
+            {% endif %}
         </ul>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
