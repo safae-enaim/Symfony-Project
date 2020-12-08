@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Form\UserType;
@@ -11,11 +12,13 @@ use App\Repository\ArticleRepository;
 use App\Repository\CommentRepository;
 use App\Repository\CommentStateRepository;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use function Sodium\compare;
 
 /**
  * @Route("/user")
@@ -62,6 +65,7 @@ class UserController extends AbstractController
         $comments = [];
         $articlesLikes = [];
         $articlesShared = [];
+        $articles= [];
         $pagComments = [];
         $pagAllComments = [];
         $pagArticlesLikes = [];
@@ -153,6 +157,7 @@ class UserController extends AbstractController
             'allComments' => $pagAllComments,
             'likes' => $pagArticlesLikes,
             'shares' => $pagArticlesShared,
+            'lastAdminArticles' => $articles,
             'adminArticles' => $pagAdminArticles
         ]);
     }
@@ -196,24 +201,20 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/comment/{id}", name="validComment", methods={"GET","POST"})
-     * @param Request $request
-     * @param CommentRepository $commentRepository
+     * @Route("/comment/{comment}", name="validComment", methods={"GET","POST"})
+     * @param Comment $comment
      * @param CommentStateRepository $commentStateRepository
-     * @param UserRepository $userRepository
      * @return Response
      */
-    public function validComment(Request $request, CommentRepository $commentRepository, CommentStateRepository $commentStateRepository, UserRepository $userRepository): Response
+    public function validComment(Comment $comment, CommentStateRepository $commentStateRepository)
     {
-        $params = $request->request;
-        $idComment = $request->attributes->get('id');
-        $comment = $commentRepository->findOneBy(['id' => $idComment]);
         $article = $comment->getArticle();
         $article->setNotification($comment->getArticle()->getNotification()-1);
         $approvedState = $commentStateRepository->findOneBy(['name' => 'approved']);
         $waitingState = $commentStateRepository->findOneBy(['name' => 'waiting']);
-        
-        if($comment->getState() == $waitingState){
+        $rejectState = $commentStateRepository->findOneBy(['name' => 'reject']);
+
+        if($comment->getState() == $waitingState || $comment->getState() == $rejectState){
             $comment->setState($approvedState);
         }
         $manager = $this->getDoctrine()->getManager();
@@ -224,19 +225,14 @@ class UserController extends AbstractController
         return $this->redirectToRoute('default');
     }
 
-        /**
-     * @Route("/comment-delete/{id}", name="rejectComment", methods={"GET","POST"})
-     * @param Request $request
-     * @param CommentRepository $commentRepository
+    /**
+     * @Route("/comment-delete/{comment}", name="rejectComment", methods={"GET","POST"})
+     * @param Comment $comment
      * @param CommentStateRepository $commentStateRepository
-     * @param UserRepository $userRepository
      * @return Response
      */
-    public function rejectComment(Request $request, CommentRepository $commentRepository, CommentStateRepository $commentStateRepository, UserRepository $userRepository): Response
+    public function rejectComment(Comment $comment, CommentStateRepository $commentStateRepository): Response
     {
-        $params = $request->request;
-        $idComment = $request->attributes->get('id');
-        $comment = $commentRepository->findOneBy(['id' => $idComment]);
         $article = $comment->getArticle();
         $article->setNotification($comment->getArticle()->getNotification()-1);
         $rejectState = $commentStateRepository->findOneBy(['name' => 'reject']);

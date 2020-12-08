@@ -73,12 +73,12 @@
 				<h2>Derniers articles</h2>
 				<div class="jumbotron allArticles">
 					<div class="list-group">
-						{% if adminArticles|length == 0 %}
+						{% if lastAdminArticles|length == 0 %}
 							<div class="d-flex w-100 justify-content-between">
 								<h5 class="mb-1">Aucun article trouvé</h5>
 							</div>
 						{% else %}
-							{% for article in adminArticles.items|slice(0,5) %}
+							{% for article in lastAdminArticles|slice(0,5) %}
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<a href="{{ path('displayArticle', {'id': article.id}) }}"><img src="{{ article.getPicture().getUrl() }}" alt="{{article.getPicture().getAlt()}}" height="200"></a>
 									<div class="d-flex w-100 justify-content-between">
@@ -118,8 +118,8 @@
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
 									<a href="{{ path('displayArticle', {'id': article.id}) }}"><img src="{{ article.getPicture().getUrl() }}" alt="{{article.getPicture().getAlt()}}" height="200"></a>
 									{% if article.getUser().getId() == app.user.id and (article.getNotification()!=null and article.getNotification() >0) %}
-										<small style="position: absolute" class="mx-1 badge badge-pill badge-info">{{ article.notification }}
-											commentaire(s) en attente de validation</small>
+										<a href="{{ path('user_show', {'id': app.user.id}) }}?section=2"><small style="position: absolute" class="mx-1 badge badge-pill badge-info">{{ article.notification }}
+												commentaire(s) en attente de validation</small></a>
 									{% endif %}
 									<div class="d-flex w-100 justify-content-between">
 										<h4 class="mb-1">{{ article.title }}</h4>
@@ -166,14 +166,16 @@
 												<p class="text-muted">{{ comment.content }}</p>
 											</td>
 											<td style="vertical-align: middle;font-size: large;">
-												<span class="{{ comment.getClassState() }}">{{comment.getState().getName()}}</span>
+												<span class="{{ comment.getClassState() }}" {#id="state"#}>{{comment.getState().getName()}}</span>
 											</td>
 											<td style="vertical-align: middle">
 												{% if comment.getState().getName() != 'approved' %}
-													<a class="btn btn-success m-1" href="{{ path('validComment', {'id': comment.getId()}) }}" method="post">Valider</a>
+{#													<a class="btn btn-success m-1" href="{{ path('validComment', {'comment': comment.getId()}) }}" method="post">Valider</a>#}
+													<btn class="btn btn-success m-1 btnValid btnValid-{{ comment.getId() }}" {#id="btnValid-{{ comment.getId() }}"#} value="{{ comment.getId() }}">Valider</btn>
 												{% endif %}
 												{% if comment.getState().getName() != 'reject' %}
-													<a class="btn btn-danger m-1" href="{{ path('rejectComment', {'id': comment.getId()}) }}" method="post">Rejeter</a>
+{#													<a class="btn btn-danger m-1" href="{{ path('rejectComment', {'comment': comment.getId()}) }}" method="post">Rejeter</a>#}
+													<btn class="btn btn-danger m-1 btnReject btnReject-{{ comment.getId() }}" {#id="btnReject-{{ comment.getId() }}"#} value="{{ comment.getId() }}">Rejeter</btn>
 												{% endif %}
 											</td>
 											<td>
@@ -464,8 +466,45 @@
 {% block javascripts %}
 	<script>
 		$(function () {
-$("#tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
-$("#tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
-});
+			$("#tabs").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+			$("#tabs li").removeClass("ui-corner-top").addClass("ui-corner-left");
+			});
+
+		var tabParameter = GetUrlParameter('section');
+		$('#tabs').tabs({active:tabParameter});
+
+		let validComment = function(){
+			let idComment = $(this).attr('value');
+			let route = "/user/comment/"+idComment;
+			$.ajax({
+				url: route,
+				type: 'GET',
+				success: function (data, statut) {
+					console.log(data);
+					location.replace(location.pathname);
+				},
+				error: function (resultat){
+					console.error(resultat);
+				}
+			});
+		}
+		let rejectComment = function(){
+			let idComment = $(this).attr('value');
+			let route = "/user/comment-delete/"+idComment;
+			$.ajax({
+				url: route,
+				type: 'GET',
+				success: function (data, statut) {
+					console.log(data);
+					location.replace(location.pathname);
+				},
+				error: function (resultat){
+					console.error(resultat);
+				}
+			});
+		}
+
+		$('.btnValid').on('click',validComment);
+		$('.btnReject').on('click',rejectComment);
 	</script>
 {% endblock %}
