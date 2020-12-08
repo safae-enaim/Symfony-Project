@@ -2,10 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Role;
+use App\Entity\Article;
+use App\Entity\Comment;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -69,12 +72,12 @@ class User implements UserInterface
     private $comments;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="user", orphanRemoval=true)
      */
     private $articleLiked;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="user", orphanRemoval=true)
      */
     private $articleShared;
 
@@ -287,19 +290,23 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getArticleLiked(): ?string
+    public function getArticleLiked(): ? Collection
     {
         return $this->articleLiked;
     }
 
-    public function setArticleLiked(?string $articleLiked): self
+    public function addLike(Article $article): self
     {
-        $this->articleLiked = $articleLiked;
-
+        $this->articleLiked[] = $article;
         return $this;
     }
 
-    public function getArticleShared(): ?string
+    public function removeLike(Article $article): self
+    {
+        $this->articleLiked[] = $article;
+        return $this;
+    }
+    public function getArticleShared(): ? Collection
     {
         return $this->articleShared;
     }

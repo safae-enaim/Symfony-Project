@@ -115,5 +115,17 @@ class Comment
         return date('d/m/G', $this->getCreatedDate()->getTimestamp());
     }
 
+    public function getClassState(): string
+    {
+        if($this->getState()->getName() === 'approved'){
+            return 'text-success';
+        }
+        else if($this->getState()->getName() === 'waiting'){
+            return 'text-warning';
+        }
+        else if($this->getState()->getName() === 'reject'){
+            return 'text-danger';
+        }
+    }
 
 }

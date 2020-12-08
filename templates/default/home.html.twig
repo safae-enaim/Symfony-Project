@@ -4,7 +4,13 @@
 {% endblock %}
 
 {% block body %}
-
+	<div class="form-group">
+		{% form_theme searchForm 'bootstrap_4_layout.html.twig' %}
+		{{ form_start(searchForm) }}
+		{{ form_row(searchForm.title, {'label': " ", 'attr': {'placeholder': 'mot clé...'}}) }}
+		<button class="btn btn-primary">Rechercher</button>
+		{{ form_end(searchForm) }}
+	</div>
 	<div class="articles">
 		{% for article in articles %}
 			{% set expr = loop.index is divisible by(2) %}
@@ -34,8 +40,8 @@
 				</div>
 				<div>
 					{# Liste des categories #}
-					{% for cate in article.getFakeCate() %}
-						<span class="badge badge-pill {{ expr ? ' badge-secondary' : 'badge-primary' }}">{{cate}}</span>
+					{% for category in article.getCategories() %}
+						<span class="badge badge-pill {{ expr ? ' badge-secondary' : 'badge-primary' }}">{{category.getName()}}</span>
 					{% endfor %}
 				</div>
 				{# Date de creation et nom de l'auteur #}
