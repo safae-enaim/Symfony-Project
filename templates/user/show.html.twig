@@ -156,9 +156,35 @@
 								<h5 class="mb-1">Aucun commentaire trouvé</h5>
 							</div>
 						{% else %}
+							<div style="display: flex" class="mb-3">
+								<h2 class="col-7">{{ allComments.getTotalItemCount }} commentaires</h2>
+								<div class="sorted col-5">
+									<table class="table table-borderless table-active">
+										<tbody>
+										<tr>
+											<td>
+												&and;&nbsp;{{ knp_pagination_sortable(allComments, 'Date', 'created_date') }}&or;
+											</td>
+											<td>
+												&and;&nbsp;{{ knp_pagination_sortable(allComments, 'État', 'state') }}&or;
+											</td>
+											<td>
+												&and;&nbsp;{{ knp_pagination_sortable(allComments, 'Article', 'article.title') }}&or;
+											</td>
+											<td>
+												&and;&nbsp;{{ knp_pagination_sortable(allComments, 'Utilisateur', 'author.firstname') }}&or;
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="navigation">
+								{{ knp_pagination_render(allComments, '', ) }}
+							</div>
 							<table class="table table-hover table-striped">
 								<tbody>
-									{% for comment in allComments.items|slice(0,5) %}
+									{% for comment in allComments.items %}
 										<tr>
 											<td>
 												<h4 class="mb-1">{{ comment.getAuthor().getFirstName() }} a commenté</h4>

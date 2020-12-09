@@ -81,8 +81,9 @@ class UserController extends AbstractController
             $comments = $commentRepository->findBy(['author' => $user->getId()], ['created_date' => 'ASC']);
             $pagComments = $paginator->paginate(
                 $comments,
-                $request->query->getInt('page', 1),
-                10
+                $request->query->getInt('userComments', 1),
+                10,
+                ['pageParameterName' => 'userComments']
             );
             $pagComments->setCustomParameters([
                 'align' => 'center',
@@ -94,8 +95,9 @@ class UserController extends AbstractController
             $articlesLikes = $user->getArticlesLiked();
             $pagArticlesLikes = $paginator->paginate(
                 $articlesLikes,
-                $request->query->getInt('page', 1),
-                10
+                $request->query->getInt('userLiked', 1),
+                10,
+                ['pageParameterName' => 'userLiked']
             );
             $pagArticlesLikes->setCustomParameters([
                 'align' => 'center',
@@ -107,8 +109,9 @@ class UserController extends AbstractController
             $articlesShared = $user->getArticlesShared();
             $pagArticlesShared = $paginator->paginate(
                 $articlesShared,
-                $request->query->getInt('page', 1),
-                10
+                $request->query->getInt('userShared', 1),
+                10,
+                ['pageParameterName' => 'userShared']
             );
             $pagArticlesShared->setCustomParameters([
                 'align' => 'center',
@@ -121,8 +124,9 @@ class UserController extends AbstractController
             rsort($articles);
             $pagAdminArticles = $paginator->paginate(
                 $articles,
-                $request->query->getInt('page', 1),
-                10
+                $request->query->getInt('adminArticles', 1),
+                10,
+                ['pageParameterName' => 'adminArticles', 'sortDirectionParameterName' => 'liked']
             );
             $pagAdminArticles->setCustomParameters([
                 'align' => 'center',
@@ -134,9 +138,10 @@ class UserController extends AbstractController
             rsort($allCcomments);
             $pagAllComments = $paginator->paginate(
                 $allCcomments,
-                $request->query->getInt('page', 1),
-                10
-            );
+                $request->query->getInt('adminComments', 1),
+                10,
+                ['pageParameterName' => 'adminComments', 'sortDirectionParameterName' => 'created_date','state','article.title', 'author.firstname']
+);
             $pagAllComments->setCustomParameters([
                 'align' => 'center',
                 'size' => 'small',
