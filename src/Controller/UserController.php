@@ -57,7 +57,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="user_show", methods={"GET"})
+     * @Route("/{id}", name="user_show", methods={"GET","POST"})
      * @param User $user
      * @param PaginatorInterface $paginator
      * @param CommentRepository $commentRepository
@@ -118,6 +118,11 @@ class UserController extends AbstractController
                 'size' => 'small',
                 'span_class' => 'btn btn-outline-success'
             ]);
+
+            //Gestion des modifications d'informations
+            $form = $this->createForm(UserType::class, $user);
+//            $form->handleRequest($request);
+
         } else if (array_search("ROLE_ADMIN", $user->getRoles()) == 0){
             //gestion des articles
             $articles = $articleRepository->findAll();
@@ -141,7 +146,7 @@ class UserController extends AbstractController
                 $request->query->getInt('adminComments', 1),
                 10,
                 ['pageParameterName' => 'adminComments', 'sortDirectionParameterName' => 'created_date','state','article.title', 'author.firstname']
-);
+            );
             $pagAllComments->setCustomParameters([
                 'align' => 'center',
                 'size' => 'small',
@@ -158,7 +163,8 @@ class UserController extends AbstractController
             'likes' => $pagArticlesLikes,
             'shares' => $pagArticlesShared,
             'lastAdminArticles' => $articles,
-            'adminArticles' => $pagAdminArticles
+            'adminArticles' => $pagAdminArticles,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -184,6 +190,57 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/{id}/updatePwd", name="user_updatePdw", methods={"POST"})
+     * @param Request $request
+     * @param User $user
+     * @return Response
+     */
+    public function updatePwd(Request $request, User $user): Response
+    {
+        $params = $request->request;
+        $userPassword = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            dump($params);
+            dump($params->get('user'));
+            dump($params->get('user')['password']);
+//            dump($params->get('user'));
+//            $userPassword->setPassword($params->get('user')['password']);
+//            $entityManager->persist($userPassword);
+//            $entityManager->flush();
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', 'Votre mot de passe a bien été modifié');
+        } else {
+            $this->addFlash('warning', 'Un problème a été rencontré lors de l\'enregistrement de votre mot de passe');
+        }
+        return $this->redirectToRoute('user_show', ['id' => $user->getId()]);
+    }
+
+    /**
+     * @Route("/{id}/update", name="user_update", methods={"POST"})
+     * @param Request $request
+     * @param User $user
+     * @return Response
+     */
+    public function update(Request $request, User $user): Response
+    {
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', 'Vos informations ont bien été modifiés');
+        } else{
+            $this->addFlash('warning', 'Un problème a été rencontré lors de l\'enregistrement de vos informations');
+        }
+//        return new Response($request);
+        return $this->redirectToRoute('user_show', ['id' => $user->getId()]);
     }
 
     /**
@@ -236,7 +293,7 @@ class UserController extends AbstractController
         $article = $comment->getArticle();
         $article->setNotification($comment->getArticle()->getNotification()-1);
         $rejectState = $commentStateRepository->findOneBy(['name' => 'reject']);
-        
+
         $comment->setState($rejectState);
 
         $manager = $this->getDoctrine()->getManager();

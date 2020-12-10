@@ -25,15 +25,15 @@ class UserType extends AbstractType
         $encoder = $this->encoder;
         $builder
             ->add('first_name', TextType::class, [
-                'required' => false
+                'required' => false,
             ])
             ->add('last_name', TextType::class, [
-                'required' => false
+                'required' => false,
             ])
-            ->add('email',  EmailType::class)
-            ->add('password', PasswordType::class)
+            ->add('email',  EmailType::class, [])
+            ->add('password', PasswordType::class, [])
             ->add('phone', TextType::class, [
-                'required' => false
+                'required' => false,
             ])
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($encoder) {
                 /** @var User */

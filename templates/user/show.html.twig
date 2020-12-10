@@ -290,39 +290,74 @@
 			</div>
 			<div id="tabUserInfoPerso" class="bg-dark">
 				<h2>Gestion des informations</h2>
-				<table class="table">
+				<table class="table-user table">
 					<tbody>
-						<tr>
-							<th>Id</th>
-							<td>{{ user.id }}</td>
-						</tr>
-						<tr>
-							<th>First_name</th>
-							<td>{{ user.firstName }}</td>
-						</tr>
-						<tr>
-							<th>Last_name</th>
-							<td>{{ user.lastName }}</td>
-						</tr>
-						<tr>
-							<th>Email</th>
-							<td>{{ user.email }}</td>
-						</tr>
-						<tr>
-							<th>Password</th>
-							<td>{{ user.password }}</td>
-						</tr>
-						<tr>
-							<th>Roles</th>
-							<td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-						</tr>
-						<tr>
-							<th>Phone</th>
-							<td>{{ user.phone }}</td>
-						</tr>
+						{{ form_start(form, {'action': path('user_update', {'id': app.user.id}), 'method': 'POST'}) }}
+							<tr>
+								<td>{{ form_label(form.first_name) }}</td>
+								<td class="">
+									<span class="{{ form.first_name.vars.id }}">{{ user.getFirstName() }}</span>
+									{{ form_widget(form.first_name) }}
+								</td>
+								<td>
+									<button type="submit" class="btn btn-success btn-save btn-save-{{ form.first_name.vars.id }}" target="{{ form.first_name.vars.id }}" hidden>Sauvegarder</button>
+									<button type="button" class="btn btn-danger btn-cancel btn-cancel-{{ form.first_name.vars.id }}" target="{{ form.first_name.vars.id }}" hidden>Annuler</button>
+									<button type="button" class="btn btn-outline-primary btn-user btn-user-{{ form.first_name.vars.id }}" target="{{ form.first_name.vars.id }}">Modifier</button>
+								</td>
+							</tr>
+							<tr>
+								<td>{{ form_label(form.last_name) }}</td>
+								<td class="">
+									<span class="{{ form.last_name.vars.id }}">{{ user.getLastName() }}</span>
+									{{ form_widget(form.last_name) }}
+								</td>
+								<td>
+									<button type="submit" class="btn btn-success btn-save btn-save-{{ form.last_name.vars.id }}" target="{{ form.last_name.vars.id }}" hidden>Sauvegarder</button>
+									<button type="button" class="btn btn-danger btn-cancel btn-cancel-{{ form.last_name.vars.id }}" target="{{ form.last_name.vars.id }}" hidden>Annuler</button>
+									<button type="button" class="btn btn-outline-primary btn-user btn-user-{{ form.last_name.vars.id }}" target="{{ form.last_name.vars.id }}">Modifier</button>
+								</td>
+							</tr>
+							<tr>
+								<td>{{ form_label(form.email) }}</td>
+								<td class="">
+									<span class="{{ form.email.vars.id }}">{{ user.getEmail() }}</span>
+									{{ form_widget(form.email) }}
+								</td>
+								<td>
+									<button type="submit" class="btn btn-success btn-save btn-save-{{ form.email.vars.id }}" target="{{ form.email.vars.id }}" hidden>Sauvegarder</button>
+									<button type="button" class="btn btn-danger btn-cancel btn-cancel-{{ form.email.vars.id }}" target="{{ form.email.vars.id }}" hidden>Annuler</button>
+									<button type="button" class="btn btn-outline-primary btn-user btn-user-{{ form.email.vars.id }}" target="{{ form.email.vars.id }}">Modifier</button>
+								</td>
+							</tr>
+							<tr>
+								<td>{{ form_label(form.password) }}</td>
+								<td class="">
+									{{ form_widget(form.password) }}
+								</td>
+								<td>
+									<button type="submit" class="btn btn-success btn-save btn-save-{{ form.password.vars.id }}" target="{{ form.password.vars.id }}" hidden>Sauvegarder</button>
+									<button type="button" class="btn btn-danger btn-cancel btn-cancel-{{ form.password.vars.id }}" target="{{ form.password.vars.id }}" hidden>Annuler</button>
+									<button type="button" class="btn btn-outline-primary btn-user btn-user-{{ form.password.vars.id }}" target="{{ form.password.vars.id }}">Modifier</button>
+								</td>
+							</tr>
+							<tr>
+								<td>{{ form_label(form.phone) }}</td>
+								<td class="">
+									<span class="{{ form.phone.vars.id }}">{{ user.getPhone() }}</span>
+									{{ form_widget(form.phone) }}
+								</td>
+								<td>
+									<button type="submit" class="btn btn-success btn-save btn-save-{{ form.phone.vars.id }}" target="{{ form.phone.vars.id }}" hidden>Sauvegarder</button>
+									<button type="button" class="btn btn-danger btn-cancel btn-cancel-{{ form.phone.vars.id }}" target="{{ form.phone.vars.id }}" hidden>Annuler</button>
+									<button type="button" class="btn btn-outline-primary btn-user btn-user-{{ form.phone.vars.id }}" target="{{ form.phone.vars.id }}">Modifier</button>
+								</td>
+							</tr>
+							<tr>
+								<td><button class="btn-primary btn">{{ button_label|default('Sauvegarder') }}</button></td>
+							</tr>
+						{{ form_end(form) }}
 					</tbody>
 				</table>
-				<a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
 			</div>
 			<div id="tabUserLikedArticles">
 				{% if likes|length == 0 %}
@@ -529,6 +564,67 @@
 				}
 			});
 		}
+
+		$('.table-user input.form-control').each(function() {
+			$(this).attr('hidden', 'true');
+		});
+
+		function updateButtons(event){
+			let target = $(event).attr('target');
+			//gestion de l'affichage de l'input
+			if ( $('#'+target).attr('hidden') == 'hidden')
+				$('#'+target).removeAttr('hidden');
+			else $('#'+target).attr('hidden', 'true');
+			//gestion de l'affichage de du span
+			if ( $('.'+target).attr('hidden') == 'hidden')
+				$('.'+target).removeAttr('hidden');
+			else $('.'+target).attr('hidden', 'true');
+			//gestion de l'affichage du boutton save
+			if ($('.btn-save-'+target).attr('hidden')  == 'hidden')
+				$('.btn-save-'+target).removeAttr('hidden');
+			else $('.btn-save-'+target).attr('hidden', 'true');
+			//gestion de l'affichage du boutton cancel
+			if ($('.btn-cancel-'+target).attr('hidden')  == 'hidden')
+				$('.btn-cancel-'+target).removeAttr('hidden');
+			else $('.btn-cancel-'+target).attr('hidden', 'true');
+			//gestion de l'affichage du boutton modifier
+			if ($('.btn-user-'+target).attr('hidden')  == 'hidden')
+				$('.btn-user-'+target).removeAttr('hidden');
+			else $('.btn-user-'+target).attr('hidden', 'true');
+
+		}
+
+		$('.table-user button.btn-save').each(function() {
+			$(this).on('click', function (){
+				if (!$(this).attr('hidden')){
+					if ($('#{{ form.password.vars.id }}').val() == '' || $('#{{ form.password.vars.id }}').val() == null) {
+						alert('Veuillez rentrer votre mot de passe pour valider la modification de vos informations');
+						if ($('#{{ form.password.vars.id }}').attr('hidden')  == 'hidden')
+							$('#{{ form.password.vars.id }}').removeAttr('hidden');
+						else $('#{{ form.password.vars.id }}').attr('hidden', 'true');
+						$('#{{ form.password.vars.id }}').focus();
+					} else {
+						updateButtons(this);
+					}
+				}
+			});
+		});
+
+		$('.table-user button.btn-cancel').each(function() {
+			$(this).on('click', function (){
+				if (!$(this).attr('hidden')){
+					updateButtons(this);
+				}
+			});
+		});
+
+		$('.table-user button.btn-user').each(function() {
+			$(this).on('click', function (){
+				if (!$(this).attr('hidden')){
+					updateButtons(this);
+				}
+			});
+		});
 
 		$('.btnValid').on('click',validComment);
 		$('.btnReject').on('click',rejectComment);

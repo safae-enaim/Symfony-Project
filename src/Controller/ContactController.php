@@ -38,8 +38,9 @@ class ContactController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($contact);
             $entityManager->flush();
+            $this->addFlash('success', 'Votre message a bien été envoyé');
 
-            return $this->redirectToRoute('contact_index');
+            return $this->redirectToRoute('default');
         }
 
         return $this->render('contact/new.html.twig', [
