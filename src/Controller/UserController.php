@@ -76,6 +76,7 @@ class UserController extends AbstractController
         $pagArticlesLikes = [];
         $pagArticlesShared = [];
         $pagAdminArticles = [];
+        $form = $this->createForm(UserType::class, $user);
         if (array_search("ROLE_USER", $user->getRoles()) == 0){
             //gestion des commentaires
             $comments = $commentRepository->findBy(['author' => $user->getId()], ['created_date' => 'ASC']);
@@ -118,11 +119,6 @@ class UserController extends AbstractController
                 'size' => 'small',
                 'span_class' => 'btn btn-outline-success'
             ]);
-
-            //Gestion des modifications d'informations
-            $form = $this->createForm(UserType::class, $user);
-//            $form->handleRequest($request);
-
         } else if (array_search("ROLE_ADMIN", $user->getRoles()) == 0){
             //gestion des articles
             $articles = $articleRepository->findAll();

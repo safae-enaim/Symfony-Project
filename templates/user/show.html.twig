@@ -48,7 +48,11 @@
 					<a href="#tabAdminArticles" class="ui-tabs-vertical ui-tabs-nav">Articles</a>
 				</li>
 				<li>
-					<a href="#tabAdminComments" class="ui-tabs-vertical ui-tabs-nav">Gérer les commentaires</a>
+					<a href="#tabAdminComments" class="ui-tabs-vertical ui-tabs-nav">Gérer les commentaires
+						{%if app.user.getAllNotifications() > 0 %}
+							<small style="position: relative" class="badge badge-pill badge-info">{{ user.getAllNotifications() }}</small>
+						{% endif %}
+					</a>
 				</li>
 			{% elseif app.user and is_granted("ROLE_USER") %}
 				<li>
@@ -185,7 +189,8 @@
 							<table class="table table-hover table-striped">
 								<tbody>
 									{% for comment in allComments.items %}
-										<tr>
+										<tr {% if comment.getArticle().getUser().getId() == app.user.id and comment.getState().getName() == "waiting" %}
+											class="bg-primary" {% endif %}>
 											<td>
 												<h4 class="mb-1">{{ comment.getAuthor().getFirstName() }} a commenté</h4>
 												<strong><em>{{ comment.getArticle().getTitle() }}</em></strong>

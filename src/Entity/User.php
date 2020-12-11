@@ -299,6 +299,8 @@ class User implements UserInterface
      */
     public function getArticlesLiked(): Collection
     {
+        dump($this->articlesLiked);
+
         return $this->articlesLiked;
     }
 
@@ -340,5 +342,18 @@ class User implements UserInterface
         $this->articlesShared->removeElement($articlesShared);
 
         return $this;
+    }
+
+    public function getAllNotifications()
+    {
+        $this->articles;
+        $notifications = 0;
+        foreach ($this->articles as $article){
+            $notifs = $article->getNotification();
+            dump($notifs);
+            if ($notifs != null && $notifs > 0)
+                $notifications += $notifs;
+        }
+        return $notifications;
     }
 }
