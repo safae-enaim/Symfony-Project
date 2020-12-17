@@ -3,11 +3,11 @@
 {% block title %}Edit Article{% endblock %}
 
 {% block body %}
+    <a class="btn btn-info mb-3" href="{{ path('user_show', {'id':  app.user.id}) }}?section=1">back to list</a>
     <h1>Edit Article</h1>
 
     {{ include('article/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('article_index') }}">back to list</a>
 
     {{ include('article/_delete_form.html.twig') }}
 {% endblock %}

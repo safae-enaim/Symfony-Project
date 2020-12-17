@@ -116,7 +116,7 @@
 							<h2>{{ adminArticles.getTotalItemCount }}
 								articles</h2>
 							<div class="navigation">
-								{{ knp_pagination_render(adminArticles) }}
+								{{ knp_pagination_render(adminArticles,'',{'section': 1}) }}
 							</div>
 							{% for article in adminArticles.items %}
 								<div class="list-group-item list-group-item-action flex-column align-items-start">
@@ -184,7 +184,7 @@
 								</div>
 							</div>
 							<div class="navigation">
-								{{ knp_pagination_render(allComments, '', ) }}
+								{{ knp_pagination_render(allComments,'',{'section': 2}) }}
 							</div>
 							<table class="table table-hover table-striped">
 								<tbody>
@@ -371,7 +371,7 @@
 					<h2>{{ likes.getTotalItemCount }}
 						articles aimés</h2>
 					<div class="navigation">
-						{{ knp_pagination_render(likes) }}
+						{{ knp_pagination_render(likes,'',{'section': 2}) }}
 					</div>
 					{% for article in likes %}
 						{% set expr = loop.index is divisible by(2) %}
@@ -422,7 +422,7 @@
 					<h2>{{ shares.getTotalItemCount }}
 						articles partagés</h2>
 					<div class="navigation">
-						{{ knp_pagination_render(shares) }}
+						{{ knp_pagination_render(shares,'',{'section': 3}) }}
 					</div>
 					{% for article in shares %}
 						{% set expr = loop.index is divisible by(2) %}
@@ -473,7 +473,7 @@
 					<h2>{{ comments.getTotalItemCount }}
 						articles commentés</h2>
 					<div class="navigation">
-						{{ knp_pagination_render(comments) }}
+						{{ knp_pagination_render(comments,'',{'section': 4}) }}
 					</div>
 					{% for comment in comments.items %}
 						{% set expr = loop.index is divisible by(2) %}

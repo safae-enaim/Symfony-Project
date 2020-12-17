@@ -52,7 +52,13 @@
 					<span class="badge badge-pill badge-info"><span id="nbShares">{{article.getShared()}}</span>
 						Shares</span>
 				</div>
-
+			</div>
+			<div class="footer-container-article col-12">
+				{% if app.user and is_granted("ROLE_ADMIN") and article.getUser().getId() == app.user.id %}
+					<span>
+							<a href="{{ path('article_edit', {'id': article.getId()}) }}" class="btn btn-outline-warning">Modifier</a>
+						</span>
+				{% endif %}
 			</div>
 		</div>
 		<div class="back-button-container">

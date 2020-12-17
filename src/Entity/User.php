@@ -350,7 +350,6 @@ class User implements UserInterface
         $notifications = 0;
         foreach ($this->articles as $article){
             $notifs = $article->getNotification();
-            dump($notifs);
             if ($notifs != null && $notifs > 0)
                 $notifications += $notifs;
         }
