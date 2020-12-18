@@ -15,7 +15,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/", name="default", methods={"GET"})
      */
-    public function index(Request $request, ArticleRepository $repo) {
+    public function index(Request $request, ArticleRepository $repo, PaginatorInterface $paginator) {
 
         $searchForm = $this->createForm(SearchType::class);
         $searchForm->handleRequest($request);
@@ -29,13 +29,25 @@ class DefaultController extends AbstractController
             $donnees = $repo->search($title);
 
             if ($donnees == null) {
-                $this->addFlash('erreur', 'Aucun article contenant ce mot clé dans le titre n\'a été trouvé, essayez en un autre.');
-           
+                $this->addFlash('warning', 'Aucun article contenant ce mot clé n\'a été trouvé, essayez en un autre.');
+            } elseif (count($donnees) > 0 && $title != "") {
+                $this->addFlash('', count($donnees) . ' articles trouvés');
             }
         }
 
+        $filteredArticles = $paginator->paginate(
+            $donnees,
+            $request->query->getInt('page', 1),
+            10,
+            ['pageParameterName' => 'page']
+
+        );
+        $filteredArticles->setCustomParameters([
+            'align' => 'center',
+            'size' => 'small',
+        ]);
         return $this->render('default/home.html.twig', [
-            'articles' => $donnees,
+            'articles' => $filteredArticles,
             'current_user' => $repo->getCurrentUser(),
             'searchForm' => $searchForm->createView()
         ]);

@@ -7,11 +7,12 @@
 	<div class="form-group">
 		{% form_theme searchForm 'bootstrap_4_layout.html.twig' %}
 		{{ form_start(searchForm) }}
-		{{ form_row(searchForm.title, {'label': " ", 'attr': {'placeholder': 'mot clé...'}}) }}
+		{{ form_row(searchForm.title, {'label': " ", 'attr': {'placeholder': 'mots clés...'}}) }}
 		<button class="btn btn-primary">Rechercher</button>
 		{{ form_end(searchForm) }}
 	</div>
 	<div class="articles">
+		{{ knp_pagination_render(articles) }}
 		{% for article in articles %}
 			{% set expr = loop.index is divisible by(2) %}
 
