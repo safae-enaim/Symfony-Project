@@ -45,9 +45,12 @@ class ArticleRepository extends ServiceEntityRepository
     }
     
     public function search($title) {
-        return $this->createQueryBuilder('Article')
-            ->andWhere('Article.title LIKE :title')
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.title LIKE :title or a.content LIKE :title')
             ->setParameter('title', '%'.$title.'%')
+//            ->innerJoin('a.user', 'usr', '', '')
+//            ->orWhere('usr.first_name LIKE :title or usr.last_name LIKE :title or usr.email LIKE :title')
+//            ->setParameter('title', '%'.$title.'%')
             ->getQuery()
             ->execute();
     }
